@@ -84,4 +84,12 @@
     <string name="chattingWith">Chatting with:</string>
     <string name="loggedInAs">"You are logged in as "</string>
     <string name="chat">Chat</string>
+    <string name="Search">SEARCH</string>
+    <string name="youareranked">You are ranked X</string>
+    <string name="UpcomingTrips">Upcoming Trips</string>
+    <string name="location">Location</string>
+    <string name="fromtext">From:</string>
+    <string name="totext">To:</string>
+    <string name="date">Date:</string>
+    <string name="transportation">Transportation:</string>
 </resources>
