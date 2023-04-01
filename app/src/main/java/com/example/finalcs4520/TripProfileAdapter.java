@@ -53,7 +53,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.trip_row, parent, false);
+                .inflate(R.layout.trip_rowprofile, parent, false);
         return new ViewHolder(view);
     }
 
