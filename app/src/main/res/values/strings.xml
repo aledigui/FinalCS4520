@@ -92,4 +92,5 @@
     <string name="totext">To:</string>
     <string name="date">Date:</string>
     <string name="transportation">Transportation:</string>
+    <string name="NameEditTextLabel">Search by username/name</string>
 </resources>
