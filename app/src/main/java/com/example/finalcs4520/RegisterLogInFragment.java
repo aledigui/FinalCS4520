@@ -127,6 +127,7 @@ public class RegisterLogInFragment extends Fragment {
         registerView = inflater.inflate(R.layout.fragment_register_log_in, container, false);
 
         // FIREBASE
+        // TODO: set up the firebase and storage account
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
