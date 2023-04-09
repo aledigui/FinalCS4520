@@ -1,5 +1,6 @@
 package com.example.finalcs4520;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,10 @@ public class ProfileFragment extends Fragment {
     private Button logOutProfileButton;
     private Switch pastFutureTripsSwitch;
 
+    private Uri newUri;
+
+    private View profileView;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -51,7 +56,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View  profileView = inflater.inflate(R.layout.fragment_profile, container, false);
+        profileView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // declaring the elements in the UI
         profileImage = profileView.findViewById(R.id.profileImage);
@@ -66,6 +71,21 @@ public class ProfileFragment extends Fragment {
 
         return profileView;
 
+    }
+
+    public void setProfilePic(Uri imgUri) {
+        newUri = imgUri;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (newUri != null) {
+            // TODO: glide
+            /*Glide.with(profileView)
+                    .load(newUri)
+                    .centerCrop()
+                    .into(profileImage);*/
+        }
     }
 
     public interface IProfileTrip {
