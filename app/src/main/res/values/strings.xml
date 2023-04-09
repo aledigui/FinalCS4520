@@ -92,14 +92,4 @@
     <string name="totext">To:</string>
     <string name="date">Date:</string>
     <string name="transportation">Transportation:</string>
-    <string name="enter">Type new credentials</string>
-    <string name="infoProfile">Click the image to edit it</string>
-    <string name="save">SAVE</string>
-    <string name="edit">Edit your first name below</string>
-    <string name="flip_camera">FLIP</string>
-    <string name="open_gallery">Open</string>
-    <string name="take_photo">PHOTO</string>
-    <string name="retake">Retake</string>
-    <string name="upload">Upload</string>
-    <string name="sendIng"><![CDATA[>]]></string>
 </resources>
