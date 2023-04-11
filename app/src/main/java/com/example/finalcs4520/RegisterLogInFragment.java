@@ -34,6 +34,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +94,7 @@ public class RegisterLogInFragment extends Fragment {
 
     private StorageReference storageRef;
 
-    private static final int PERMISSIONS_CODE = 0x100;
+    private static final int PERMISSIONS_CODE = 0x110;
 
     private View registerView;
 
@@ -318,6 +320,10 @@ public class RegisterLogInFragment extends Fragment {
                                                                             }
                                                                         });
 
+                                                                        // Once a user is registered we create a storage for the user of upcoming and past trips
+                                                                        createTripDatabase(email);
+
+                                                                        // set to visible
                                                                         signupText.setVisibility(View.VISIBLE);
                                                                         signupclick.setVisibility(View.VISIBLE);
                                                                         // invisble
@@ -472,6 +478,29 @@ public class RegisterLogInFragment extends Fragment {
         newUri = imgUri;
         signUpImage.setImageURI(null);
         signUpImage.setImageURI(newUri);
+
+    }
+
+    private void createTripDatabase(String email) {
+        // creating a user with empty upcoming and past trips
+        Map<String, ArrayList<TripProfile>> userTrips = new HashMap<>();
+        userTrips.put("upcomingTrips", new ArrayList<TripProfile>());
+        userTrips.put("pastTrips", new ArrayList<TripProfile>());
+        db.collection("userTrips").document(email)
+                .set(userTrips)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // nothing
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Unable create user trips. Try again",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
 
     }
 

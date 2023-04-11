@@ -7,13 +7,17 @@ public class TripProfile {
     private String toLocation;
     private String dateTrip;
     // This is an arraylist of string for now, later we can make Transportation its own class if needed.
-    private ArrayList<String> transportations;
+    private String transportations;
 
-    public TripProfile(String fromLocation, String toLocation, String dateTrip, ArrayList<String> transportations) {
+    private Boolean completed;
+
+    // TODO: arraylist for transportation
+    public TripProfile(String fromLocation, String toLocation, String dateTrip, String transportations, Boolean completed) {
         this.fromLocation = fromLocation;
         this.toLocation = toLocation;
         this.dateTrip = dateTrip;
         this.transportations = transportations;
+        this.completed = completed;
 
     }
 
@@ -29,8 +33,14 @@ public class TripProfile {
         return this.dateTrip;
     }
 
-    public ArrayList<String> getTransportations() {
+    public String getTransportations() {
         return this.transportations;
+    }
+
+    public Boolean getCompleted() {return this.completed;}
+
+    public void setCompleted(Boolean newBool) {
+        this.completed = newBool;
     }
 
 

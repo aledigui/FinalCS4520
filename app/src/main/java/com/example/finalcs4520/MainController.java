@@ -10,13 +10,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture{
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip{
 
     private int screenCamera;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.MainActivityContainer, new RegisterLogInFragment(), "registerFragment")
@@ -98,7 +107,7 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     @Override
     public void onUploadTripPicture(Uri imgUri) {
 
-        // TODO: upload picture of the
+        // TODO: upload picture of the trip
 
     }
 
@@ -109,5 +118,53 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         profileFragment.setProfilePic(imgUri);
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onLogOutPressed() {
+        mAuth.signOut();
+        mUser = null;
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onSearchPressed() {
+        // TODO: change this to search travel
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onImgPressed() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, CameraFragment.newInstance(2), "cameraFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onDeletePressed(TripProfile deleteTrip) {
+        ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager()
+                .findFragmentByTag("profileFragment");
+        profileFragment.deleteTrip(deleteTrip);
+
+    }
+
+    @Override
+    public void onCompleteTripPressed(TripProfile compTrip) {
+        ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager()
+                .findFragmentByTag("profileFragment");
+        profileFragment.completeTrip(compTrip);
+
+    }
+
+    @Override
+    public void onAddFriendsPressed() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

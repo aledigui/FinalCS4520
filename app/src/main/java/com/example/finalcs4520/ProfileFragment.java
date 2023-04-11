@@ -1,11 +1,8 @@
 package com.example.finalcs4520;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +10,33 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +57,25 @@ public class ProfileFragment extends Fragment {
 
     private View profileView;
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+
+    private FirebaseFirestore db;
+
+    private FirebaseStorage storage;
+
+    private StorageReference storageRef;
+    private String profilePicPath;
+
+    private ArrayList<TripProfile> tripProfile  = new ArrayList<TripProfile>();
+    private ArrayList<TripProfile> pastTripProfile  = new ArrayList<TripProfile>();
+
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    private TripProfileAdapter tripProfileAdapter;
+
+    private ImageView addFriendsImg;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -52,6 +95,8 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    IProfileTrip profileUpdate;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,6 +112,148 @@ public class ProfileFragment extends Fragment {
         pastUpcomingTripRVProfile = profileView.findViewById(R.id.pastUpcomingTripRVProfile);
         logOutProfileButton = profileView.findViewById(R.id.logOutProfileButton);
         pastFutureTripsSwitch = profileView.findViewById(R.id.pastFutureTripsSwitch);
+        addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        // ADD TRIPS
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+
+        recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
+        pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
+        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+        DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // UPCOMING
+                        // TODO: add trips once user has booked them
+                        /*ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
+                        for (int i = 0; i < documentHashUpcoming.size(); i++) {
+                            String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
+                            String transportations = documentHashUpcoming.get(i).get("transportations").toString();
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            tempUpcomingTrips.add(tempUpcomingTrip);
+                        }
+                        tripProfile = tempUpcomingTrips;
+                        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);*/
+
+                        // PAST
+                        ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashPast= (ArrayList<HashMap>) document.getData().get("pastTrips");
+                        for (int i = 0; i < documentHashPast.size(); i++) {
+                            String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashPast.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
+                            String transportations = documentHashPast.get(i).get("transportations").toString();
+                            TripProfile tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            tempPastTrips.add(tempPastTrip);
+                        }
+                        pastTripProfile = tempPastTrips;
+
+                    } else {
+                    }
+                }
+            }
+        });
+        // set the fields
+        db.collection("tripRegisteredUsers")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (mUser.getEmail().equals(document.getData().get("email").toString())) {
+                                    usernameProfile.setText(document.getData().get("username").toString());
+                                }
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Unable to retrieve users. Try again later", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+        // set the profile picture
+        profilePicPath = "userImages/"+mUser.getEmail()+".jpg";
+        storageRef.child(profilePicPath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(profileView)
+                        .load(uri)
+                        .centerCrop()
+                        .into(profileImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(getContext(), "Unable to retrieve profile pic. Try again", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onImgPressed();
+            }
+        });
+
+
+        pastFutureTripsSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
+                    pastFutureTripsSwitch.setText("Past Trips");
+                    tripProfileAdapter = new TripProfileAdapter(pastTripProfile, getContext());
+
+                } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
+                    pastFutureTripsSwitch.setText("Upcoming Trips");
+                    tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                }
+                pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+            }
+        });
+
+        addFriendsImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onAddFriendsPressed();
+            }
+        });
+
+        searchIconProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onSearchPressed();
+            }
+        });
+
+        logOutProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onLogOutPressed();
+            }
+        });
 
 
         return profileView;
@@ -76,22 +263,76 @@ public class ProfileFragment extends Fragment {
     public void setProfilePic(Uri imgUri) {
         newUri = imgUri;
     }
+
+    public void completeTrip(TripProfile compTrip) {
+        // once the user marks a certain trip as completed it will be deleted
+        // from the upcoming trips and added to the
+
+        // you can't delete any past trips. Thus the size is permanent
+        // making each id unique
+        String tripId = mUser.getEmail();
+        pastTripProfile.add(compTrip);
+
+        Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
+        newCompletedTrips.put("pastTrips", pastTripProfile);
+
+        db.collection("userTrips").document(tripId)
+                .set(newCompletedTrips)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        compTrip.setCompleted(true);
+                        tripProfile.remove(compTrip);
+                        // TODO: remove trip from upcoming trips database
+                        Toast.makeText(getContext(), "You completed a trip! Congrats!",
+                                Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Unable to complete trip. Try again",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    public void deleteTrip(TripProfile delTrip) {
+        tripProfile.remove(delTrip);
+    }
     @Override
     public void onResume() {
         super.onResume();
         if (newUri != null) {
-            // TODO: glide
-            /*Glide.with(profileView)
+            Glide.with(profileView)
                     .load(newUri)
                     .centerCrop()
-                    .into(profileImage);*/
+                    .into(profileImage);
+        }
+
+
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof ProfileFragment.IProfileTrip) {
+            profileUpdate = (ProfileFragment.IProfileTrip) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement IFragmentUpdate");
         }
     }
 
     public interface IProfileTrip {
         void onLogOutPressed();
         void onSearchPressed();
-        void onEditPressed();
-        void onDeletePressed();
+        void onImgPressed();
+
+        void onCompleteTripPressed(TripProfile completeTrip);
+        void onDeletePressed(TripProfile deleteTrip);
+
+        void onAddFriendsPressed();
     }
 }

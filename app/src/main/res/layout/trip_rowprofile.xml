@@ -5,97 +5,136 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/editTripProfile"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
-
-    <TextView
-        android:id="@+id/toText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/totext"
-        app:layout_constraintEnd_toEndOf="@+id/fromText"
-        app:layout_constraintTop_toBottomOf="@+id/fromText" />
-
-    <TextView
-        android:id="@+id/dateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/date"
-        app:layout_constraintEnd_toEndOf="@+id/toText"
-        app:layout_constraintTop_toBottomOf="@+id/toText" />
-
-    <TextView
-        android:id="@+id/transportationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/transportation"
-        app:layout_constraintEnd_toEndOf="@+id/dateText"
-        app:layout_constraintTop_toBottomOf="@+id/dateText" />
-
-    <TextView
-        android:id="@+id/fromText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/fromtext"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/deleteTripProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        app:cardBackgroundColor="#A0C5F4"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:contentPadding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTripProfile"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/fromLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="@string/empty_string"
-        app:layout_constraintBottom_toBottomOf="@+id/fromText"
-        app:layout_constraintStart_toEndOf="@+id/fromText"
-        app:layout_constraintTop_toTopOf="@+id/fromText" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/toLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/empty_string"
-        app:layout_constraintBottom_toBottomOf="@+id/toText"
-        app:layout_constraintStart_toStartOf="@+id/fromLocation"
-        app:layout_constraintTop_toTopOf="@+id/toText" />
+            <ImageView
+                android:id="@+id/completeTripImg"
+                android:layout_width="33dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/comp3" />
 
-    <TextView
-        android:id="@+id/dateProfileTrip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/empty_string"
-        app:layout_constraintBottom_toBottomOf="@+id/dateText"
-        app:layout_constraintStart_toStartOf="@+id/toLocation"
-        app:layout_constraintTop_toTopOf="@+id/dateText" />
+            <ImageView
+                android:id="@+id/deleteTripProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/completeTripImg"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
 
-    <TextView
-        android:id="@+id/transportationListProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/empty_string"
-        app:layout_constraintBottom_toBottomOf="@+id/transportationText"
-        app:layout_constraintStart_toStartOf="@+id/dateProfileTrip"
-        app:layout_constraintTop_toTopOf="@+id/transportationText" />
+            <TextView
+                android:id="@+id/toText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/totext"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/dateText"
+                app:layout_constraintTop_toBottomOf="@+id/fromText" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/date"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/transportationText"
+                app:layout_constraintTop_toBottomOf="@+id/toText" />
+
+            <TextView
+                android:id="@+id/transportationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/transportation"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateText" />
+
+            <TextView
+                android:id="@+id/fromText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/fromtext"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/transportationText"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fromLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/empty_string"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="@+id/fromText"
+                app:layout_constraintStart_toEndOf="@+id/fromText"
+                app:layout_constraintTop_toTopOf="@+id/fromText" />
+
+            <TextView
+                android:id="@+id/toLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_string"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="@+id/toText"
+                app:layout_constraintStart_toStartOf="@+id/fromLocation"
+                app:layout_constraintTop_toTopOf="@+id/toText" />
+
+            <TextView
+                android:id="@+id/dateProfileTrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_string"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="@+id/dateText"
+                app:layout_constraintStart_toStartOf="@+id/toLocation"
+                app:layout_constraintTop_toTopOf="@+id/dateText" />
+
+            <TextView
+                android:id="@+id/transportationListProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_string"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="@+id/transportationText"
+                app:layout_constraintStart_toStartOf="@+id/dateProfileTrip"
+                app:layout_constraintTop_toTopOf="@+id/transportationText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

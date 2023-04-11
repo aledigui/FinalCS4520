@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#C4D4EA"
     tools:context=".ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,78 +12,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/addFriendsImg"
+            android:layout_width="33dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/proof1"
+            app:layout_constraintEnd_toEndOf="@+id/searchIconProfile"
+            app:layout_constraintStart_toStartOf="@+id/searchIconProfile"
+            app:layout_constraintTop_toBottomOf="@+id/searchIconProfile" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="50dp"
+            android:forceDarkAllowed="false"
+            android:outlineAmbientShadowColor="#4558C1"
+            android:outlineSpotShadowColor="#4558C1"
+            android:overScrollMode="never"
+            app:cardBackgroundColor="#B3CAE8"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="2dp"
+            app:contentPadding="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/cardView3"
+            app:layout_constraintEnd_toEndOf="@+id/cardView3"
+            app:layout_constraintStart_toStartOf="@+id/cardView3"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/usernameProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/usernameSignup"
+                    android:textColor="#000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
         <Button
             android:id="@+id/logOutProfileButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="103dp"
+            android:layout_height="37dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:backgroundTint="#3F51B5"
             android:text="@string/logout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
-
-        <TextView
-            android:id="@+id/usernameProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/usernameSignup"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileImage" />
-
-        <TextView
-            android:id="@+id/rankingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/youareranked"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/usernameProfile" />
-
-        <Switch
-            android:id="@+id/pastFutureTripsSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/UpcomingTrips"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rankingText" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pastUpcomingTripRVProfile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pastFutureTripsSwitch" />
-
-        <TextView
-            android:id="@+id/locationProfileHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/location"
-            app:layout_constraintBottom_toTopOf="@+id/profileImage"
-            app:layout_constraintEnd_toEndOf="@+id/profileImage"
-            app:layout_constraintStart_toStartOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -94,5 +78,86 @@
             android:src="@android:drawable/ic_menu_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/pastFutureTripsSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/UpcomingTrips"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rankingText" />
+
+        <TextView
+            android:id="@+id/locationProfileHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/location"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="@+id/cardView3"
+            app:layout_constraintStart_toStartOf="@+id/cardView3"
+            app:layout_constraintTop_toBottomOf="@+id/cardView3" />
+
+        <TextView
+            android:id="@+id/rankingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/youareranked"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationProfileHeader" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
+            android:layout_width="130dp"
+            android:layout_height="126dp"
+            android:layout_marginBottom="490dp"
+            android:layout_marginEnd="140dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="100dp"
+            app:cardBackgroundColor="#0B0A0A"
+            app:cardCornerRadius="700dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardViewLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="132dp"
+                    android:layout_height="131dp"
+                    android:src="@drawable/select_avatar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pastUpcomingTripRVProfile"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="350dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.006" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

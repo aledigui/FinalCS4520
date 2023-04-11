@@ -18,7 +18,8 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView fromLocation, toLocation, dateProfileTrip, transportationListProfile;
-        private ImageView editTripProfile, deleteTripProfile;
+        private ImageView completeTripImg, deleteTripProfile;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -26,7 +27,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
             toLocation = itemView.findViewById(R.id.toLocation);
             dateProfileTrip = itemView.findViewById(R.id.dateProfileTrip);
             transportationListProfile = itemView.findViewById(R.id.transportationListProfile);
-            editTripProfile = itemView.findViewById(R.id.editTripProfile);
+            completeTripImg = itemView.findViewById(R.id.completeTripImg);
             deleteTripProfile = itemView.findViewById(R.id.deleteTripProfile);
         }
 
@@ -34,7 +35,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         public TextView getToLocation() {return this.toLocation;}
         public TextView getDateProfileTrip() {return this.dateProfileTrip;}
         public TextView getTransportationListProfile() {return this.transportationListProfile;}
-        public ImageView getEditTripProfile() {return this.editTripProfile;}
+        public ImageView getCompleteTripProfile() {return this.completeTripImg;}
         public ImageView getDeleteTripProfile() {return this.deleteTripProfile;}
     }
 
@@ -61,21 +62,28 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.getDateProfileTrip().setText(profileTrips.get(position).getDateTrip());
         holder.getFromLocation().setText(profileTrips.get(position).getFromLocation());
+        holder.getToLocation().setText(profileTrips.get(position).getToLocation());
         holder.getTransportationListProfile().setText(profileTrips.get(position).getTransportations().toString());
 
-        holder.getDeleteTripProfile().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iProfileTrip.onDeletePressed();
-            }
-        });
+        int pos = position;
+        if (!profileTrips.get(position).getCompleted()) {
+            holder.getDeleteTripProfile().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iProfileTrip.onDeletePressed(profileTrips.get(pos));
+                }
+            });
 
-        holder.getEditTripProfile().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iProfileTrip.onEditPressed();
-            }
-        });
+            holder.getCompleteTripProfile().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iProfileTrip.onCompleteTripPressed(profileTrips.get(pos));
+                }
+            });
+        } else {
+            holder.getCompleteTripProfile().setVisibility(View.INVISIBLE);
+            holder.getDeleteTripProfile().setVisibility(View.INVISIBLE);
+        }
 
 
     }
