@@ -116,7 +116,7 @@ public class cameraPreviewFragment extends Fragment {
                         // sign up image
                         iPreviewImg.onUploadSignUp(imageDisplayed);
                     } else if (screenSaver == 1) {
-                        // chat message
+                        // trip image
                         iPreviewImg.onUploadTripPicture(imageDisplayed);
                     } else if (screenSaver == 2) {
                         // edit profile

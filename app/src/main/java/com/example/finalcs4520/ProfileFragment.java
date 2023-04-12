@@ -76,6 +76,10 @@ public class ProfileFragment extends Fragment {
 
     private ImageView addFriendsImg;
 
+    private Uri tripUri;
+
+    private int imgTripPosition = -1;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -121,18 +125,14 @@ public class ProfileFragment extends Fragment {
         storageRef = storage.getReference();
 
         // ADD TRIPS
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
+        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
 
-        recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
-        pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
-        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
-        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
         DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -165,7 +165,14 @@ public class ProfileFragment extends Fragment {
                             String toLocation = documentHashPast.get(i).get("toLocation").toString();
                             String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
                             String transportations = documentHashPast.get(i).get("transportations").toString();
-                            TripProfile tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            Object imgPath = documentHashPast.get(i).get("tripPicture");
+                            TripProfile tempPastTrip;
+                            if (imgPath != null) {
+                                String tempuri = imgPath.toString();
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, Uri.parse(tempuri));
+                            } else {
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
+                            }
                             tempPastTrips.add(tempPastTrip);
                         }
                         pastTripProfile = tempPastTrips;
@@ -255,6 +262,11 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
+        pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
+        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
 
         return profileView;
 
@@ -301,6 +313,15 @@ public class ProfileFragment extends Fragment {
     public void deleteTrip(TripProfile delTrip) {
         tripProfile.remove(delTrip);
     }
+
+    public void setTripUri(Uri newUri, int position) {
+        tripUri = newUri;
+        imgTripPosition = position;
+    }
+
+    public void setImgTripPosition(int position) {
+        imgTripPosition = position;
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -309,6 +330,124 @@ public class ProfileFragment extends Fragment {
                     .load(newUri)
                     .centerCrop()
                     .into(profileImage);
+        }
+        if (tripUri != null && imgTripPosition != -1) {
+            // TODO: recycler view check which text it is and then put the pertinent list of trips
+            String imgId = "pastTrip_" + mUser.getEmail() + "_" + imgTripPosition + ".jpg";
+            String imgPath = "tripImages/" + imgId;
+            StorageReference userImageRef = storageRef.child(imgPath);
+            Uri file = tripUri;
+            UploadTask uploadTask;
+            uploadTask = userImageRef.putFile(file);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(getContext(), "Unable to save picture. Try again",
+                            Toast.LENGTH_LONG).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // In this case we want to put an actual value to pictureMessage so that it changes
+                    // We will download the image associated with the Uri
+                    TripProfile existingPastTrip = pastTripProfile.get(imgTripPosition);
+                    TripProfile tempPastTripProfile = new TripProfile(existingPastTrip.getFromLocation(),
+                            existingPastTrip.getToLocation(), existingPastTrip.getDateTrip(),
+                            existingPastTrip.getTransportations(), true, tripUri);
+                    tempPastTripProfile.setTripImgPath(tripUri);
+                    // setting it back to null so that it doesn't keep the reference
+                    // and stores it in another chat
+                    tripUri = null;
+                    pastTripProfile.set(imgTripPosition, tempPastTripProfile);
+                    Map<String, ArrayList<TripProfile>> chatsCollection = new HashMap<>();
+                    chatsCollection.put("pastTrips", pastTripProfile);
+                    db.collection("userTrips").document(mUser.getEmail())
+                            .set(chatsCollection)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // NOTHING
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Unable to save image of your trip. Plase try again",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            });
+
+            recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
+            pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
+            tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+            pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+            DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // UPCOMING
+                            // TODO: add trips once user has booked them
+                        /*ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
+                        for (int i = 0; i < documentHashUpcoming.size(); i++) {
+                            String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
+                            String transportations = documentHashUpcoming.get(i).get("transportations").toString();
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            tempUpcomingTrips.add(tempUpcomingTrip);
+                        }
+                        tripProfile = tempUpcomingTrips;
+                        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);*/
+
+                            // PAST
+                            ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
+                            ArrayList<HashMap> documentHashPast= (ArrayList<HashMap>) document.getData().get("pastTrips");
+                            for (int i = 0; i < documentHashPast.size(); i++) {
+                                String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
+                                String toLocation = documentHashPast.get(i).get("toLocation").toString();
+                                String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
+                                String transportations = documentHashPast.get(i).get("transportations").toString();
+                                Object imgPath = documentHashPast.get(i).get("tripImgPath");
+                                TripProfile tempPastTrip;
+                                if (imgPath != null) {
+                                    String tempuri = imgPath.toString();
+                                    tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, Uri.parse(tempuri));
+                                } else {
+                                    tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
+                                }
+
+                                tempPastTrips.add(tempPastTrip);
+                            }
+                            pastTripProfile = tempPastTrips;
+
+                            if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
+                                pastFutureTripsSwitch.setText("Past Trips");
+                                tripProfileAdapter = new TripProfileAdapter(pastTripProfile, getContext());
+
+                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
+                                pastFutureTripsSwitch.setText("Upcoming Trips");
+                                tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                            }
+                            pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+                        } else {
+
+                        }
+                    }
+                }
+            });
+
+
         }
 
 
@@ -334,5 +473,7 @@ public class ProfileFragment extends Fragment {
         void onDeletePressed(TripProfile deleteTrip);
 
         void onAddFriendsPressed();
+
+        void onTripImgPressed(int position);
     }
 }

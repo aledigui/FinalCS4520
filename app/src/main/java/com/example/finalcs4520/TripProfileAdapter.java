@@ -1,6 +1,7 @@
 package com.example.finalcs4520;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView fromLocation, toLocation, dateProfileTrip, transportationListProfile;
-        private ImageView completeTripImg, deleteTripProfile;
+        private ImageView completeTripImg, deleteTripProfile, tripImg;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -29,6 +30,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
             transportationListProfile = itemView.findViewById(R.id.transportationListProfile);
             completeTripImg = itemView.findViewById(R.id.completeTripImg);
             deleteTripProfile = itemView.findViewById(R.id.deleteTripProfile);
+            tripImg = itemView.findViewById(R.id.tripImg);
         }
 
         public TextView getFromLocation() {return this.fromLocation;}
@@ -37,6 +39,8 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         public TextView getTransportationListProfile() {return this.transportationListProfile;}
         public ImageView getCompleteTripProfile() {return this.completeTripImg;}
         public ImageView getDeleteTripProfile() {return this.deleteTripProfile;}
+
+        public ImageView getTripImg() {return this.tripImg;}
     }
 
     public TripProfileAdapter(ArrayList<TripProfile> profileTrips, Context context) {
@@ -83,6 +87,23 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         } else {
             holder.getCompleteTripProfile().setVisibility(View.INVISIBLE);
             holder.getDeleteTripProfile().setVisibility(View.INVISIBLE);
+
+            holder.getTripImg().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO: save an image
+                    iProfileTrip.onTripImgPressed(pos);
+                }
+            });
+
+            // update the trip image
+            if (profileTrips.get(position).getTripPicture() != null) {
+                holder.getTripImg().setImageURI(null);
+                System.out.println(profileTrips.get(position).getTripPicture());
+                Uri newUri = profileTrips.get(position).getTripPicture();
+                holder.getTripImg().setImageURI(newUri);
+
+            }
         }
 
 

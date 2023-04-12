@@ -19,6 +19,8 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
+    private int positionTrip = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,9 +108,15 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onUploadTripPicture(Uri imgUri) {
+        ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager()
+                .findFragmentByTag("profileFragment");
 
-        // TODO: upload picture of the trip
-
+        if (positionTrip != -1) {
+            profileFragment.setTripUri(imgUri, positionTrip);
+        }
+        positionTrip = -1;
+        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -164,6 +172,15 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onAddFriendsPressed() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onTripImgPressed(int position) {
+        positionTrip = position;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, CameraFragment.newInstance(1), "cameraFragment")
                 .addToBackStack(null)
                 .commit();
     }
