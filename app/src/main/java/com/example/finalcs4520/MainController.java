@@ -13,7 +13,7 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip{
+public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity {
 
     private int screenCamera;
 
@@ -183,5 +183,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
                 .replace(R.id.MainActivityContainer, CameraFragment.newInstance(1), "cameraFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void openProfile(User user) {
+
     }
 }

@@ -285,14 +285,10 @@ public class RegisterLogInFragment extends Fragment {
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
                                                         // TODO: add the user to the database
-                                                        Map<String, String> newRegisteredUser = new HashMap<>();
-                                                        newRegisteredUser.put("username", username);
-                                                        newRegisteredUser.put("email", email);
-                                                        newRegisteredUser.put("firstname", userFirstName);
-                                                        newRegisteredUser.put("lastname", userLastName);
+                                                        User newUserData = new User(username, email, userFirstName, userLastName);
                                                         // TODO: put the image too
                                                         db.collection("tripRegisteredUsers").document(email)
-                                                                .set(newRegisteredUser)
+                                                                .set(newUserData)
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
