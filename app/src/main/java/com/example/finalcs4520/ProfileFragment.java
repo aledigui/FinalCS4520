@@ -417,7 +417,7 @@ public class ProfileFragment extends Fragment {
                                 String toLocation = documentHashPast.get(i).get("toLocation").toString();
                                 String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
                                 String transportations = documentHashPast.get(i).get("transportations").toString();
-                                Object imgPath = documentHashPast.get(i).get("tripImgPath");
+                                Object imgPath = documentHashPast.get(i).get("tripPicture");
                                 TripProfile tempPastTrip;
                                 if (imgPath != null) {
                                     String tempuri = imgPath.toString();
