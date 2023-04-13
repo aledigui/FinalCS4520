@@ -80,7 +80,7 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         holder.getUserInfoContainer().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.openProfile(currUser);
+                listener.openProfile(currUser.getEmail());
             }
         });
     }
@@ -122,6 +122,6 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
     }
 
     public interface IFromSearchProfileAdapterToActivity {
-        void openProfile(User user);
+        void openProfile(String userEmail);
     }
 }

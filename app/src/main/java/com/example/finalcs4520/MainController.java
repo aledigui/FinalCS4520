@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static java.security.AccessController.getContext;
 /*
 public class MainController extends AppCompatActivity {
     @Override
@@ -145,7 +148,11 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onLogOutPressed() {
         mAuth.signOut();
         mUser = null;
-        getSupportFragmentManager().popBackStack();
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 1); ++i) {
+            fm.popBackStack();
+        }
+
     }
 
     @Override
@@ -199,7 +206,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
-    public void openProfile(User user) {
-
+    public void openProfile(String userEmail) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "cameraFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

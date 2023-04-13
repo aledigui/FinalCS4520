@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -16,10 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.ViewHolder>{
 
     private ArrayList<TripProfile> profileTrips;
+    private String userEmail;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView fromLocation, toLocation, dateProfileTrip, transportationListProfile;
         private ImageView completeTripImg, deleteTripProfile, tripImg;
+
+
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -43,8 +52,9 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         public ImageView getTripImg() {return this.tripImg;}
     }
 
-    public TripProfileAdapter(ArrayList<TripProfile> profileTrips, Context context) {
+    public TripProfileAdapter(String userEmail, ArrayList<TripProfile> profileTrips, Context context) {
         this.profileTrips = profileTrips;
+        this.userEmail = userEmail;
         if (context instanceof ProfileFragment.IProfileTrip) {
             iProfileTrip = (ProfileFragment.IProfileTrip) context;
         }
@@ -69,41 +79,49 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         holder.getToLocation().setText(profileTrips.get(position).getToLocation());
         holder.getTransportationListProfile().setText(profileTrips.get(position).getTransportations().toString());
 
-        int pos = position;
-        if (!profileTrips.get(position).getCompleted()) {
-            holder.getDeleteTripProfile().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iProfileTrip.onDeletePressed(profileTrips.get(pos));
-                }
-            });
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
-            holder.getCompleteTripProfile().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    iProfileTrip.onCompleteTripPressed(profileTrips.get(pos));
+        if (mUser.getEmail().equals(userEmail)) {
+            int pos = position;
+
+            if (!profileTrips.get(position).getCompleted()) {
+                holder.getDeleteTripProfile().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        iProfileTrip.onDeletePressed(profileTrips.get(pos));
+                    }
+                });
+
+                holder.getCompleteTripProfile().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        iProfileTrip.onCompleteTripPressed(profileTrips.get(pos));
+                    }
+                });
+            } else {
+                holder.getCompleteTripProfile().setVisibility(View.INVISIBLE);
+                holder.getDeleteTripProfile().setVisibility(View.INVISIBLE);
+
+                holder.getTripImg().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        iProfileTrip.onTripImgPressed(pos);
+                    }
+                });
+
+                // update the trip image
+                if (profileTrips.get(position).getTripPicture() != null) {
+                    holder.getTripImg().setImageURI(null);
+                    System.out.println(profileTrips.get(position).getTripPicture());
+                    Uri newUri = profileTrips.get(position).getTripPicture();
+                    holder.getTripImg().setImageURI(newUri);
+
                 }
-            });
+            }
         } else {
             holder.getCompleteTripProfile().setVisibility(View.INVISIBLE);
             holder.getDeleteTripProfile().setVisibility(View.INVISIBLE);
-
-            holder.getTripImg().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO: save an image
-                    iProfileTrip.onTripImgPressed(pos);
-                }
-            });
-
-            // update the trip image
-            if (profileTrips.get(position).getTripPicture() != null) {
-                holder.getTripImg().setImageURI(null);
-                System.out.println(profileTrips.get(position).getTripPicture());
-                Uri newUri = profileTrips.get(position).getTripPicture();
-                holder.getTripImg().setImageURI(newUri);
-
-            }
         }
 
 

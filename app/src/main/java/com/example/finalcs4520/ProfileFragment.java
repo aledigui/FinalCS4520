@@ -80,14 +80,21 @@ public class ProfileFragment extends Fragment {
 
     private int imgTripPosition = -1;
 
+    private static final String ARG_USER = "ARG_USER";
+
+    private String searchedUser;
+
+    private String thisUserEmail;
+
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    public static ProfileFragment newInstance() {
+    public static ProfileFragment newInstance(String userEmail) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_USER, userEmail);
         fragment.setArguments(args);
         return fragment;
     }
@@ -123,6 +130,12 @@ public class ProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        thisUserEmail = mUser.getEmail();
+
+        if (getArguments() != null) {
+            thisUserEmail = getArguments().getString(ARG_USER);
+
+        }
 
         // ADD TRIPS
         tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
@@ -133,8 +146,7 @@ public class ProfileFragment extends Fragment {
         tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
         tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
 
-
-        DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
+        DocumentReference docRef = db.collection("userTrips").document(thisUserEmail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -190,7 +202,7 @@ public class ProfileFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (mUser.getEmail().equals(document.getData().get("email").toString())) {
+                                if (thisUserEmail.equals(document.getData().get("email").toString())) {
                                     usernameProfile.setText(document.getData().get("username").toString());
                                 }
                             }
@@ -201,7 +213,7 @@ public class ProfileFragment extends Fragment {
                 });
 
         // set the profile picture
-        profilePicPath = "userImages/"+mUser.getEmail()+".jpg";
+        profilePicPath = "userImages/"+thisUserEmail+".jpg";
         storageRef.child(profilePicPath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -217,12 +229,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                profileUpdate.onImgPressed();
-            }
-        });
+        if (thisUserEmail.equals(mUser.getEmail())) {
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    profileUpdate.onImgPressed();
+                }
+            });
+
+        }
 
 
         pastFutureTripsSwitch.setOnClickListener(new View.OnClickListener() {
@@ -230,11 +245,11 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
                     pastFutureTripsSwitch.setText("Past Trips");
-                    tripProfileAdapter = new TripProfileAdapter(pastTripProfile, getContext());
+                    tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
 
                 } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
                     pastFutureTripsSwitch.setText("Upcoming Trips");
-                    tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                    tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
                 }
                 pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
@@ -264,7 +279,7 @@ public class ProfileFragment extends Fragment {
 
         recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
         pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
-        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
         pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
 
@@ -383,7 +398,7 @@ public class ProfileFragment extends Fragment {
 
             recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
             pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
-            tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+            tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
             pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
             DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
@@ -432,11 +447,11 @@ public class ProfileFragment extends Fragment {
 
                             if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
                                 pastFutureTripsSwitch.setText("Past Trips");
-                                tripProfileAdapter = new TripProfileAdapter(pastTripProfile, getContext());
+                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
 
                             } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
                                 pastFutureTripsSwitch.setText("Upcoming Trips");
-                                tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
+                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
                             }
                             pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
