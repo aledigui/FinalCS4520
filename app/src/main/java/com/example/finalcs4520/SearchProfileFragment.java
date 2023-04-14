@@ -88,6 +88,10 @@ public class SearchProfileFragment extends Fragment {
                                         users.add(queriedUser);
                                         resultsAdapter.notifyDataSetChanged();
                                     }
+
+                                    if (task.getResult().size() == 0) {
+                                        Toast.makeText(getContext(), "No users found", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                                 else {
                                     Toast.makeText(getContext(), "User search failed", Toast.LENGTH_SHORT).show();
