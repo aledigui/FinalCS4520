@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static java.security.AccessController.getContext;
-
+/*
 public class MainController extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,8 @@ public class MainController extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
-}
-/*
+}*/
+
 public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity {
 
     private int screenCamera;
@@ -221,4 +221,4 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         }
 
     }
-}*/
+}
