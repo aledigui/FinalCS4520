@@ -285,7 +285,7 @@ public class RegisterLogInFragment extends Fragment {
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
                                                         // TODO: add the user to the database
-                                                        User newUserData = new User(username, email, userFirstName, userLastName);
+                                                        User newUserData = new User(username, email, userFirstName, userLastName, null);
                                                         // TODO: put the image too
                                                         db.collection("tripRegisteredUsers").document(email)
                                                                 .set(newUserData)

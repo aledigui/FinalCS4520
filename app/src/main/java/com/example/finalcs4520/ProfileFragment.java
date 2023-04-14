@@ -1,6 +1,13 @@
 package com.example.finalcs4520;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,11 +36,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +62,8 @@ public class ProfileFragment extends Fragment {
     private TextView rankingText;
     private TextView locationProfileHeader;
     private ImageView searchIconProfile;
+
+    private ImageView locationTag;
     private RecyclerView pastUpcomingTripRVProfile;
     private Button logOutProfileButton;
     private Switch pastFutureTripsSwitch;
@@ -67,8 +82,8 @@ public class ProfileFragment extends Fragment {
     private StorageReference storageRef;
     private String profilePicPath;
 
-    private ArrayList<TripProfile> tripProfile  = new ArrayList<TripProfile>();
-    private ArrayList<TripProfile> pastTripProfile  = new ArrayList<TripProfile>();
+    private ArrayList<TripProfile> tripProfile = new ArrayList<TripProfile>();
+    private ArrayList<TripProfile> pastTripProfile = new ArrayList<TripProfile>();
 
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
@@ -85,6 +100,18 @@ public class ProfileFragment extends Fragment {
     private String searchedUser;
 
     private String thisUserEmail;
+
+    private LocationManager locationManager;
+
+
+    private boolean gps_permission = false;
+    private boolean network_permission = false;
+
+    private List<Address> myAddress = new ArrayList<>();
+
+    private String myLocation = "Location";
+
+    private ArrayList<String> firstlastName = new ArrayList<>();
 
 
     public ProfileFragment() {
@@ -117,7 +144,7 @@ public class ProfileFragment extends Fragment {
         // declaring the elements in the UI
         profileImage = profileView.findViewById(R.id.profileImage);
         usernameProfile = profileView.findViewById(R.id.usernameProfile);
-        rankingText = profileView.findViewById(R.id.rankingText);
+        locationTag = profileView.findViewById(R.id.locationTag);
         locationProfileHeader = profileView.findViewById(R.id.locationProfileHeader);
         searchIconProfile = profileView.findViewById(R.id.searchIconProfile);
         pastUpcomingTripRVProfile = profileView.findViewById(R.id.pastUpcomingTripRVProfile);
@@ -131,6 +158,11 @@ public class ProfileFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         thisUserEmail = mUser.getEmail();
+        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
 
         if (getArguments() != null) {
             thisUserEmail = getArguments().getString(ARG_USER);
@@ -171,7 +203,7 @@ public class ProfileFragment extends Fragment {
 
                         // PAST
                         ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
-                        ArrayList<HashMap> documentHashPast= (ArrayList<HashMap>) document.getData().get("pastTrips");
+                        ArrayList<HashMap> documentHashPast = (ArrayList<HashMap>) document.getData().get("pastTrips");
                         for (int i = 0; i < documentHashPast.size(); i++) {
                             String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
                             String toLocation = documentHashPast.get(i).get("toLocation").toString();
@@ -204,6 +236,11 @@ public class ProfileFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (thisUserEmail.equals(document.getData().get("email").toString())) {
                                     usernameProfile.setText(document.getData().get("username").toString());
+                                    firstlastName.add(document.getData().get("firstname").toString());
+                                    firstlastName.add(document.getData().get("lastname").toString());
+                                    if(document.getData().get("location") != null) {
+                                        locationProfileHeader.setText(document.getData().get("location").toString());
+                                    }
                                 }
                             }
                         } else {
@@ -213,7 +250,7 @@ public class ProfileFragment extends Fragment {
                 });
 
         // set the profile picture
-        profilePicPath = "userImages/"+thisUserEmail+".jpg";
+        profilePicPath = "userImages/" + thisUserEmail + ".jpg";
         storageRef.child(profilePicPath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -243,11 +280,11 @@ public class ProfileFragment extends Fragment {
         pastFutureTripsSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
+                if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
                     pastFutureTripsSwitch.setText("Past Trips");
                     tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
 
-                } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
+                } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")) {
                     pastFutureTripsSwitch.setText("Upcoming Trips");
                     tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
                 }
@@ -255,6 +292,19 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+
+        locationTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (thisUserEmail.equals(mUser.getEmail())) {
+                    getUserLocation();
+
+
+                }
+            }
+        });
+
 
         addFriendsImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,6 +384,67 @@ public class ProfileFragment extends Fragment {
         imgTripPosition = position;
     }
 
+    public void getUserLocation() {
+
+            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getContext(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+                    try {
+                        myAddress = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                String city = myAddress.get(0).getLocality();
+                String state = myAddress.get(0).getAdminArea();
+                myLocation = state + ", " + city;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        locationProfileHeader.setText(myLocation);
+                        if (firstlastName.size() > 1) {
+                            User newUserData = new User(usernameProfile.getText().toString(),
+                                    thisUserEmail,
+                                    firstlastName.get(0),
+                                    firstlastName.get(1),
+                                    locationProfileHeader.getText().toString());
+                            db.collection("tripRegisteredUsers").document(thisUserEmail)
+                                    .set(newUserData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getContext(), "Unable to store your location",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+            }
+        });
+    }
     public void setImgTripPosition(int position) {
         imgTripPosition = position;
     }

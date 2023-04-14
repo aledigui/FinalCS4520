@@ -6,15 +6,18 @@ public class User {
     private String firstName;
     private String lastName;
 
+    private String location;
+
     public User() {
 
     }
 
-    public User(String username, String email, String firstName, String lastName) {
+    public User(String username, String email, String firstName, String lastName, String location) {
         this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.location = location;
     }
 
     public String getUsername() {
@@ -48,6 +51,10 @@ public class User {
     public void setLastname(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getLocation() {return this.location;}
+
+    public void setLocation(String newLocation) {this.location = newLocation;}
 
     @Override
     public String toString() {

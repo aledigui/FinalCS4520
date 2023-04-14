@@ -49,8 +49,10 @@
                     android:id="@+id/usernameProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
                     android:text="@string/usernameSignup"
                     android:textColor="#000000"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -83,25 +85,28 @@
             android:id="@+id/pastFutureTripsSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginTop="16dp"
             android:text="@string/UpcomingTrips"
             android:textColor="#000000"
+            app:layout_constraintBottom_toTopOf="@+id/pastUpcomingTripRVProfile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rankingText" />
+            app:layout_constraintTop_toBottomOf="@+id/locationProfileHeader" />
 
         <TextView
             android:id="@+id/locationProfileHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/location"
+            android:layout_marginTop="45dp"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/locationHeader"
             android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="@+id/cardView3"
             app:layout_constraintStart_toStartOf="@+id/cardView3"
             app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/rankingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,7 +115,7 @@
             android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationProfileHeader" />
+            app:layout_constraintTop_toBottomOf="@+id/locationProfileHeader" />-->
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView3"
@@ -152,12 +157,24 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="350dp"
+            android:layout_marginTop="335dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.006" />
+
+        <ImageView
+            android:id="@+id/locationTag"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/locationpin"
+            app:layout_constraintBottom_toTopOf="@+id/locationProfileHeader"
+            app:layout_constraintEnd_toEndOf="@+id/locationProfileHeader"
+            app:layout_constraintStart_toStartOf="@+id/locationProfileHeader"
+            app:layout_constraintTop_toBottomOf="@+id/cardView3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
