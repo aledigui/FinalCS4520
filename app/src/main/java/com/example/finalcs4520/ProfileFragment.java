@@ -240,6 +240,10 @@ public class ProfileFragment extends Fragment {
                                     firstlastName.add(document.getData().get("lastname").toString());
                                     if(document.getData().get("location") != null) {
                                         locationProfileHeader.setText(document.getData().get("location").toString());
+                                    } else {
+                                        if (!thisUserEmail.equals(mUser.getEmail())) {
+                                            locationProfileHeader.setText("This user has not updated their location");
+                                        }
                                     }
                                 }
                             }
