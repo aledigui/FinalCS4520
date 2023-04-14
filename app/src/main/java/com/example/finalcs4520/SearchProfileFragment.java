@@ -82,6 +82,7 @@ public class SearchProfileFragment extends Fragment {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     users.clear();
+                                    resultsAdapter.notifyDataSetChanged();
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         User queriedUser = document.toObject(User.class);
                                         users.add(queriedUser);

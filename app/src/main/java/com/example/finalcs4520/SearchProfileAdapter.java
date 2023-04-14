@@ -30,8 +30,6 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
 
     private IFromSearchProfileAdapterToActivity listener;
 
-    private boolean imageLoaded;
-
     public SearchProfileAdapter(ArrayList<User> users, Context context) {
         this.users = users;
         this.storage = FirebaseStorage.getInstance();
@@ -43,8 +41,6 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         else {
             throw new RuntimeException("IFromSearchPRofileAdapterToActivity not implemented");
         }
-
-        this.imageLoaded = false;
     }
 
     @NonNull
@@ -63,19 +59,15 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         holder.getUsernameText().setText("Username: " + currUser.getUsername());
         holder.getPfpView().setVisibility(VISIBLE);
 
-        if (!imageLoaded) {
-            StorageReference pfpLoc = rootRef.child("userImages/" + currUser.getEmail() + ".jpg");
+        StorageReference pfpLoc = rootRef.child("userImages/" + currUser.getEmail() + ".jpg");
 
-            final long MAX_SIZE = 1024 * 1024;
-            pfpLoc.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    holder.getPfpView().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                }
-            });
-
-            imageLoaded = true;
-        }
+        final long MAX_SIZE = 1024 * 1024;
+        pfpLoc.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                holder.getPfpView().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
+        });
 
         holder.getUserInfoContainer().setOnClickListener(new View.OnClickListener() {
             @Override
