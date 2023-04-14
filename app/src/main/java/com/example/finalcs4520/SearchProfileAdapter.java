@@ -4,6 +4,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -29,6 +34,10 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
     private StorageReference rootRef;
 
     private IFromSearchProfileAdapterToActivity listener;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+
+    private boolean imageLoaded;
 
     public SearchProfileAdapter(ArrayList<User> users, Context context) {
         this.users = users;
@@ -41,6 +50,8 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         else {
             throw new RuntimeException("IFromSearchPRofileAdapterToActivity not implemented");
         }
+
+        this.imageLoaded = false;
     }
 
     @NonNull
@@ -59,20 +70,27 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         holder.getUsernameText().setText("Username: " + currUser.getUsername());
         holder.getPfpView().setVisibility(VISIBLE);
 
-        StorageReference pfpLoc = rootRef.child("userImages/" + currUser.getEmail() + ".jpg");
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
-        final long MAX_SIZE = 1024 * 1024;
-        pfpLoc.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                holder.getPfpView().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-            }
-        });
+        if (!imageLoaded) {
+            StorageReference pfpLoc = rootRef.child("userImages/" + currUser.getEmail() + ".jpg");
+
+            final long MAX_SIZE = 1024 * 1024;
+            pfpLoc.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    holder.getPfpView().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }
+            });
+
+            imageLoaded = true;
+        }
 
         holder.getUserInfoContainer().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.openProfile(currUser.getEmail());
+                listener.openProfile(currUser.getEmail(), mUser.getEmail());
             }
         });
     }
@@ -114,6 +132,6 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
     }
 
     public interface IFromSearchProfileAdapterToActivity {
-        void openProfile(String userEmail);
+        void openProfile(String userEmail, String myEmail);
     }
 }

@@ -159,7 +159,7 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onSearchPressed() {
         // TODO: change this to search travel
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
                 .addToBackStack(null)
                 .commit();
     }
@@ -206,10 +206,19 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
-    public void openProfile(String userEmail) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "cameraFragment")
-                .addToBackStack(null)
-                .commit();
+    public void openProfile(String userEmail, String myEmail) {
+        if (userEmail.equals(myEmail)) {
+            // return to main profile screen if you select your own profile
+            FragmentManager fm = getSupportFragmentManager();
+            for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+                fm.popBackStack();
+            }
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "cameraFragment")
+                    .addToBackStack(null)
+                    .commit();
+        }
+
     }
 }
