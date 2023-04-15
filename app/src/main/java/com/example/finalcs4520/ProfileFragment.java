@@ -58,6 +58,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ProfileFragment extends Fragment {
     private ImageView profileImage;
+    private ImageView publicButton;
     private TextView usernameProfile;
     private TextView rankingText;
     private TextView locationProfileHeader;
@@ -151,6 +152,7 @@ public class ProfileFragment extends Fragment {
         logOutProfileButton = profileView.findViewById(R.id.logOutProfileButton);
         pastFutureTripsSwitch = profileView.findViewById(R.id.pastFutureTripsSwitch);
         addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
+        publicButton = profileView.findViewById(R.id.publicButton);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -294,6 +296,13 @@ public class ProfileFragment extends Fragment {
                 }
                 pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
+            }
+        });
+
+        publicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onPublicPressed();
             }
         });
 
@@ -605,5 +614,7 @@ public class ProfileFragment extends Fragment {
         void onAddFriendsPressed();
 
         void onTripImgPressed(int position);
+
+        void onPublicPressed();
     }
 }

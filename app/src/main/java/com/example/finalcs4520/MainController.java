@@ -206,6 +206,15 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
+    public void onPublicPressed() {
+        // TODO: change the fragment to the new public transport fragment
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "publicFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
     public void openProfile(String userEmail, String myEmail) {
         if (userEmail.equals(myEmail)) {
             // return to main profile screen if you select your own profile
