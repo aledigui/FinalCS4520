@@ -114,6 +114,8 @@ public class ProfileFragment extends Fragment {
 
     private ArrayList<String> firstlastName = new ArrayList<>();
 
+    private ImageView exploreButton;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -153,6 +155,7 @@ public class ProfileFragment extends Fragment {
         pastFutureTripsSwitch = profileView.findViewById(R.id.pastFutureTripsSwitch);
         addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
         publicButton = profileView.findViewById(R.id.publicButton);
+        exploreButton = profileView.findViewById(R.id.exploreButton);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -323,6 +326,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 profileUpdate.onAddFriendsPressed();
+            }
+        });
+
+        exploreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onExplorePressed();
             }
         });
 
@@ -616,5 +626,7 @@ public class ProfileFragment extends Fragment {
         void onTripImgPressed(int position);
 
         void onPublicPressed();
+
+        void onExplorePressed();
     }
 }

@@ -215,6 +215,15 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
+    public void onExplorePressed() {
+        // TODO: change the fragment to the new map fragment
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
     public void openProfile(String userEmail, String myEmail) {
         if (userEmail.equals(myEmail)) {
             // return to main profile screen if you select your own profile
