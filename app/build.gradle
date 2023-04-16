@@ -1,7 +1,8 @@
 plugins {
-    // AIzaSyAoZ-GCidzJ6cBjl19xuRbKGG_P_SvmkIo
+    //
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -67,4 +68,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.squareup.okhttp3:okhttp:4.1.0'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 }
