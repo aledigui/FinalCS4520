@@ -29,7 +29,12 @@ public class MainController extends AppCompatActivity {
     }
 }*/
 
-public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity {
+public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister,
+        cameraPreviewFragment.IPreviewImg,
+        CameraFragment.ICameraPicture,
+        ProfileFragment.IProfileTrip,
+        SearchProfileAdapter.IFromSearchProfileAdapterToActivity,
+        ExploreFragment.IExploreUpdate{
 
     private int screenCamera;
 
@@ -238,5 +243,14 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
                     .commit();
         }
 
+    }
+
+    @Override
+    public void onLocationSelected(String location, String destination) {
+        // TODO: create a new instance of the public transport
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }
