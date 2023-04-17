@@ -29,7 +29,7 @@ public class MainController extends AppCompatActivity {
     }
 }*/
 
-public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity {
+public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity, TransitSummaryAdapter.IOpenTransitRoute {
 
     private int screenCamera;
 
@@ -209,7 +209,7 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onPublicPressed() {
         // TODO: change the fragment to the new public transport fragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "publicFragment")
+                .replace(R.id.MainActivityContainer, new PublicTransitSearchFragment(), "publicFragment")
                 .addToBackStack(null)
                 .commit();
     }
@@ -238,5 +238,13 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
                     .commit();
         }
 
+    }
+
+    @Override
+    public void openRoute(TransitRoute route) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, TransitRouteFragment.newInstance(route), "publicFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

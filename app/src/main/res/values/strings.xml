@@ -103,4 +103,7 @@
     <string name="upload">Upload</string>
     <string name="sendIng"><![CDATA[>]]></string>
     <string name="locationHeader">Click the icon to update your location!</string>
+    <string name="Destination">Destination:</string>
+    <string name="SourceLabel">Source:</string>
+    <string name="Accept">Accept</string>
 </resources>
