@@ -243,7 +243,7 @@ public class ProfileFragment extends Fragment {
                                     usernameProfile.setText(document.getData().get("username").toString());
                                     firstlastName.add(document.getData().get("firstname").toString());
                                     firstlastName.add(document.getData().get("lastname").toString());
-                                    if(document.getData().get("location") != null) {
+                                    if (document.getData().get("location") != null) {
                                         locationProfileHeader.setText(document.getData().get("location").toString());
                                     } else {
                                         if (!thisUserEmail.equals(mUser.getEmail())) {
@@ -409,18 +409,18 @@ public class ProfileFragment extends Fragment {
 
     public void getUserLocation() {
 
-            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(),
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
@@ -468,9 +468,11 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
     public void setImgTripPosition(int position) {
         imgTripPosition = position;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -560,7 +562,7 @@ public class ProfileFragment extends Fragment {
 
                             // PAST
                             ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
-                            ArrayList<HashMap> documentHashPast= (ArrayList<HashMap>) document.getData().get("pastTrips");
+                            ArrayList<HashMap> documentHashPast = (ArrayList<HashMap>) document.getData().get("pastTrips");
                             for (int i = 0; i < documentHashPast.size(); i++) {
                                 String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
                                 String toLocation = documentHashPast.get(i).get("toLocation").toString();
@@ -579,11 +581,11 @@ public class ProfileFragment extends Fragment {
                             }
                             pastTripProfile = tempPastTrips;
 
-                            if(pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
+                            if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
                                 pastFutureTripsSwitch.setText("Past Trips");
                                 tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
 
-                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")){
+                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")) {
                                 pastFutureTripsSwitch.setText("Upcoming Trips");
                                 tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
                             }
@@ -600,7 +602,6 @@ public class ProfileFragment extends Fragment {
         }
 
 
-
     }
 
     @Override
@@ -615,10 +616,13 @@ public class ProfileFragment extends Fragment {
 
     public interface IProfileTrip {
         void onLogOutPressed();
+
         void onSearchPressed();
+
         void onImgPressed();
 
         void onCompleteTripPressed(TripProfile completeTrip);
+
         void onDeletePressed(TripProfile deleteTrip);
 
         void onAddFriendsPressed();

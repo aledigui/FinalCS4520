@@ -29,7 +29,12 @@ public class MainController extends AppCompatActivity {
     }
 }*/
 
-public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister, cameraPreviewFragment.IPreviewImg, CameraFragment.ICameraPicture, ProfileFragment.IProfileTrip, SearchProfileAdapter.IFromSearchProfileAdapterToActivity, TransitSummaryAdapter.IOpenTransitRoute {
+public class MainController extends AppCompatActivity implements RegisterLogInFragment.IRegister,
+        cameraPreviewFragment.IPreviewImg,
+        CameraFragment.ICameraPicture,
+        ProfileFragment.IProfileTrip,
+        SearchProfileAdapter.IFromSearchProfileAdapterToActivity,
+        ExploreFragment.IExploreUpdate{
 
     private int screenCamera;
 
@@ -209,7 +214,7 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onPublicPressed() {
         // TODO: change the fragment to the new public transport fragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, new PublicTransitSearchFragment(), "publicFragment")
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "publicFragment")
                 .addToBackStack(null)
                 .commit();
     }
@@ -241,9 +246,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
-    public void openRoute(TransitRoute route) {
+    public void onLocationSelected(String location, String destination) {
+        // TODO: create a new instance of the public transport
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, TransitRouteFragment.newInstance(route), "publicFragment")
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "searchFragment")
                 .addToBackStack(null)
                 .commit();
     }
