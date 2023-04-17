@@ -105,4 +105,7 @@
     <string name="locationHeader">Click the icon to update your location!</string>
     <string name="locationUb">Where would you like to go?</string>
     <string name="saveDes">Save Destination</string>
+    <string name="Destination">Destination:</string>
+    <string name="SourceLabel">Source:</string>
+    <string name="Accept">Accept</string>
 </resources>
