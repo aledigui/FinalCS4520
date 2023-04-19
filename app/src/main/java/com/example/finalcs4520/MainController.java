@@ -39,7 +39,8 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         TransitRouteFragment.ITransitRoute,
         PublicTransitSearchFragment.IPublicSearch,
         SearchProfileFragment.ISearchProfile,
-        SearchTravelFragment.ISearchTravel{
+        SearchTravelFragment.ISearchTravel,
+        FlightAdapter.IFlightAdapter{
 
     private int screenCamera;
 
@@ -415,5 +416,13 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
             fm.popBackStack();
         }
+    }
+
+    @Override
+    public void onAcceptClicked(String userEmail) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

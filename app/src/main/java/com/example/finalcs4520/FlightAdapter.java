@@ -39,9 +39,14 @@ public class FlightAdapter extends RecyclerView.Adapter<SearchTravelFragment.Vie
 
     private FirebaseFirestore db;
 
+    IFlightAdapter iFlightAdapter;
+
     public FlightAdapter(ArrayList<Flight> flights, Context context) {
         this.flights = flights;
         this.context = context;
+        if (context instanceof FlightAdapter.IFlightAdapter) {
+            iFlightAdapter = (FlightAdapter.IFlightAdapter) context;
+        }
     }
 
 
@@ -143,6 +148,7 @@ public class FlightAdapter extends RecyclerView.Adapter<SearchTravelFragment.Vie
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(view.getContext(), "Saved! Get ready for your upcoming trip!",
                                         Toast.LENGTH_LONG).show();
+                                iFlightAdapter.onAcceptClicked(mUser.getEmail());
 
                             }
                         })
@@ -160,5 +166,9 @@ public class FlightAdapter extends RecyclerView.Adapter<SearchTravelFragment.Vie
     @Override
     public int getItemCount() {
         return this.flights.size();
+    }
+
+    public interface IFlightAdapter {
+        void onAcceptClicked(String userEmail);
     }
 }
