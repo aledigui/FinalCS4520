@@ -116,6 +116,8 @@ public class ProfileFragment extends Fragment {
 
     private ImageView exploreButton;
 
+    private Boolean wasChecked = false;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -191,7 +193,7 @@ public class ProfileFragment extends Fragment {
                             String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
                             String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
                             String transportations = documentHashUpcoming.get(i).get("transportations").toString();
-                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, false, null);
                             tempUpcomingTrips.add(tempUpcomingTrip);
                         }
                         tripProfile = tempUpcomingTrips;
@@ -317,6 +319,7 @@ public class ProfileFragment extends Fragment {
         addFriendsImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                wasChecked = pastFutureTripsSwitch.isChecked();
                 profileUpdate.onAddFriendsPressed();
             }
         });
@@ -324,6 +327,7 @@ public class ProfileFragment extends Fragment {
         exploreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                wasChecked = pastFutureTripsSwitch.isChecked();
                 profileUpdate.onExplorePressed();
             }
         });
@@ -331,6 +335,7 @@ public class ProfileFragment extends Fragment {
         searchIconProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                wasChecked = pastFutureTripsSwitch.isChecked();
                 profileUpdate.onSearchPressed();
             }
         });
@@ -364,9 +369,11 @@ public class ProfileFragment extends Fragment {
         // making each id unique
         String tripId = mUser.getEmail();
         pastTripProfile.add(compTrip);
+        tripProfile.remove(compTrip);
 
         Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
         newCompletedTrips.put("pastTrips", pastTripProfile);
+        newCompletedTrips.put("upcomingTrips", tripProfile);
 
         db.collection("userTrips").document(tripId)
                 .set(newCompletedTrips)
@@ -374,10 +381,14 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         compTrip.setCompleted(true);
-                        tripProfile.remove(compTrip);
+
                         // TODO: remove trip from upcoming trips database
                         Toast.makeText(getContext(), "You completed a trip! Congrats!",
                                 Toast.LENGTH_LONG).show();
+                        recyclerViewLayoutManager = new LinearLayoutManager(getContext());
+                        pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
                     }
                 })
@@ -392,6 +403,34 @@ public class ProfileFragment extends Fragment {
 
     public void deleteTrip(TripProfile delTrip) {
         tripProfile.remove(delTrip);
+        String tripId = mUser.getEmail();
+
+        Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
+        newCompletedTrips.put("pastTrips", pastTripProfile);
+        newCompletedTrips.put("upcomingTrips", tripProfile);
+
+        db.collection("userTrips").document(tripId)
+                .set(newCompletedTrips)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // TODO: remove trip from upcoming trips database
+                        Toast.makeText(getContext(), "Upcoming trip successfully deleted",
+                                Toast.LENGTH_LONG).show();
+                        recyclerViewLayoutManager = new LinearLayoutManager(getContext());
+                        pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Unable to complete trip. Try again",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     public void setTripUri(Uri newUri, int position) {
@@ -468,6 +507,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        pastFutureTripsSwitch.setChecked(false);
         if (newUri != null) {
             Glide.with(profileView)
                     .load(newUri)
@@ -538,19 +578,19 @@ public class ProfileFragment extends Fragment {
                         if (document.exists()) {
                             // UPCOMING
                             // TODO: add trips once user has booked them
-                        /*ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
                         ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
                         for (int i = 0; i < documentHashUpcoming.size(); i++) {
                             String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
                             String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
                             String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
                             String transportations = documentHashUpcoming.get(i).get("transportations").toString();
-                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, false, null);
                             tempUpcomingTrips.add(tempUpcomingTrip);
                         }
                         tripProfile = tempUpcomingTrips;
-                        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
-                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);*/
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
                             // PAST
                             ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
@@ -573,13 +613,11 @@ public class ProfileFragment extends Fragment {
                             }
                             pastTripProfile = tempPastTrips;
 
-                            if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
-                                pastFutureTripsSwitch.setText("Past Trips");
-                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
-
-                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")) {
-                                pastFutureTripsSwitch.setText("Upcoming Trips");
+                            if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips") || !wasChecked) {
                                 tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+
+                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips") || wasChecked) {
+                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
                             }
                             pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 

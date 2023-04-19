@@ -35,7 +35,8 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         ProfileFragment.IProfileTrip,
         SearchProfileAdapter.IFromSearchProfileAdapterToActivity,
         ExploreFragment.IExploreUpdate,
-        TransitSummaryAdapter.IOpenTransitRoute{
+        TransitSummaryAdapter.IOpenTransitRoute,
+        TransitRouteFragment.ITransitRoute{
 
     private int screenCamera;
 
@@ -163,7 +164,6 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onSearchPressed() {
-        // TODO: change this to search travel
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
                 .addToBackStack(null)
@@ -213,7 +213,6 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onPublicPressed() {
-        // TODO: change the fragment to the new public transport fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, new PublicTransitSearchFragment(), "publicFragment")
                 .addToBackStack(null)
@@ -222,7 +221,6 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onExplorePressed() {
-        // TODO: change the fragment to the new map fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
                 .addToBackStack(null)
@@ -248,7 +246,6 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onLocationSelected(String location, String destination) {
-        // TODO: create a new instance of the public transport
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, PublicTransitSearchFragment.newInstance(location, destination), "publicFragment")
                 .addToBackStack(null)
@@ -259,6 +256,14 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void openRoute(TransitRoute route, String departure, String destination) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, TransitRouteFragment.newInstance(route, departure, destination), "routeFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onAcceptPressed(String userEmail) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
                 .addToBackStack(null)
                 .commit();
     }

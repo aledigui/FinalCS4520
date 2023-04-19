@@ -1,5 +1,6 @@
 package com.example.finalcs4520;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -155,7 +156,6 @@ public class TransitRouteFragment extends Fragment {
 
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = df.format(c.getTime());
-                Toast.makeText(getContext(), destinationCity + ", " + departureCity, Toast.LENGTH_LONG).show();
                 TripProfile newTripProfile = new TripProfile(departureCity, destinationCity,
                         formattedDate, "public transport", false, null);
                 Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
@@ -171,6 +171,7 @@ public class TransitRouteFragment extends Fragment {
                                 // TODO: remove trip from upcoming trips database
                                 Toast.makeText(getContext(), "Saved! Get ready for your upcoming trip!",
                                         Toast.LENGTH_LONG).show();
+                                iTransitRoute.onAcceptPressed(mUser.getEmail());
 
                             }
                         })
@@ -186,4 +187,20 @@ public class TransitRouteFragment extends Fragment {
 
         return rootView;
     }
+    ITransitRoute iTransitRoute;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof TransitRouteFragment.ITransitRoute) {
+            iTransitRoute = (TransitRouteFragment.ITransitRoute) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement IFragmentUpdate");
+        }
+    }
+
+    public interface ITransitRoute {
+        void onAcceptPressed(String userEmail);
+    }
 }
+

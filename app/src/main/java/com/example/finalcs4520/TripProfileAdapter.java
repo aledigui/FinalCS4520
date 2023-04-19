@@ -82,10 +82,11 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
+
         if (mUser.getEmail().equals(userEmail)) {
             int pos = position;
-
             if (!profileTrips.get(position).getCompleted()) {
+
                 holder.getDeleteTripProfile().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -113,7 +114,6 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
                 // update the trip image
                 if (profileTrips.get(position).getTripPicture() != null) {
                     holder.getTripImg().setImageURI(null);
-                    System.out.println(profileTrips.get(position).getTripPicture());
                     Uri newUri = profileTrips.get(position).getTripPicture();
                     holder.getTripImg().setImageURI(newUri);
 
