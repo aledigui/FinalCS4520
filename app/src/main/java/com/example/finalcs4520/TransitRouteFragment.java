@@ -110,7 +110,6 @@ public class TransitRouteFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // UPCOMING
-                        // TODO: add trips once user has booked them
                         ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
                         ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
                         for (int i = 0; i < documentHashUpcoming.size(); i++) {
