@@ -76,6 +76,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private String finalDeparture;
     private String finalDestination;
 
+    private String departureCity;
+    private String destinationCity;
+
     public ExploreFragment() {
         // Required empty public constructor
     }
@@ -162,6 +165,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 } else if (finalDeparture != null
                         && finalDestination != null) {
                     exploreUpdate.onLocationSelected(finalDeparture, finalDestination);
+                    exploreUpdate.sendCities(departureCity, destinationCity);
                 } else {
                     Toast.makeText(getContext(), "Please select a departure!", Toast.LENGTH_LONG).show();
                 }
@@ -208,9 +212,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                             gMap.setMyLocationEnabled(true);
                             Location currentLocation = (Location) task.getResult();
                             if (finalDestination == null) {
-                                destination = "Destiantion: " + currentLocation.getLatitude() + " , " + currentLocation.getLongitude();
+                                destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
                             } else {
-                                myLocation = "Departure: " + currentLocation.getLatitude() + " , " + currentLocation.getLongitude();
+                                myLocation = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
                             }
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 15f, "My location");
@@ -244,9 +248,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
             Address address = addressList.get(0);
             // we do this check in order to get the initial departure if the user does not want to locate themselves
             if (destination != null) {
-                myLocation = "Departure: " + address.getLatitude() + " , " + address.getLongitude();
+                myLocation = address.getLatitude() + "," + address.getLongitude();
             } else {
-                destination = "Destination: " + address.getLatitude() + " , " + address.getLongitude();
+                destination = address.getLatitude() + "," + address.getLongitude();
             }
 
 
@@ -285,5 +289,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
     public interface IExploreUpdate {
         void onLocationSelected(String location, String destination);
+
+        void sendCities(String departureCity, String destinationCity);
     }
 }

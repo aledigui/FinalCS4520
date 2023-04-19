@@ -42,14 +42,21 @@ public class PublicTransitSearchFragment extends Fragment {
     private Button searchButton;
 
     private ArrayList<TransitRoute> routeList;
+    private static final String ARG_LOC = "args_loc";
+    private static final String ARG_DEST = "args_dest";
+
+    private String departure;
+    private String destination;
 
     public PublicTransitSearchFragment() {
         // Required empty public constructor
     }
 
-    public static PublicTransitSearchFragment newInstance() {
+    public static PublicTransitSearchFragment newInstance(String location, String destination) {
         PublicTransitSearchFragment fragment = new PublicTransitSearchFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_LOC, location);
+        args.putString(ARG_DEST, location);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +65,7 @@ public class PublicTransitSearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
         }
     }
 
@@ -78,14 +86,25 @@ public class PublicTransitSearchFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_public_transit_search, container, false);
+
+        sourceEditText = rootView.findViewById(R.id.sourceEditText);
+        destinationEditText = rootView.findViewById(R.id.destinationEditText);
+        searchButton = rootView.findViewById(R.id.searchButton);
+
         transitOptionsRecyclerView = rootView.findViewById(R.id.transitOptionsRecyclerView);
         transitOptionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TransitSummaryAdapter(routeList, getContext());
         transitOptionsRecyclerView.setAdapter(adapter);
 
-        sourceEditText = rootView.findViewById(R.id.sourceEditText);
-        destinationEditText = rootView.findViewById(R.id.destinationEditText);
-        searchButton = rootView.findViewById(R.id.searchButton);
+
+
+        if (getArguments() != null) {
+            departure = getArguments().getString(ARG_LOC);
+            destination = getArguments().getString(ARG_DEST);
+            sourceEditText.setText(departure);
+            destinationEditText.setText(destination);
+
+        }
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
