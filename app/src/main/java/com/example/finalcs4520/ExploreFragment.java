@@ -240,7 +240,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                             hideKeyBoard();
                             gMap.setMyLocationEnabled(true);
                             Location currentLocation = (Location) task.getResult();
-                            if (finalDestination == null) {
+                            if (currentLocation == null) {
+                                Toast.makeText(getContext(), "Unable to retrieve your device location. Try again please", Toast.LENGTH_LONG).show();
+                            }
+                            else if (finalDestination == null) {
                                 destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
                             } else {
                                 myLocation = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
@@ -293,6 +296,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
 
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), 10, location);
+        } else {
+            Toast.makeText(getContext(), "Invalid location. Please try another location", Toast.LENGTH_LONG).show();
         }
 
 
