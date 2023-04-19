@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -164,8 +165,31 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     finalDeparture = myLocation;
                 } else if (finalDeparture != null
                         && finalDestination != null) {
-                    System.out.println(finalDeparture);
-                    System.out.println(finalDestination);
+                    if (departureCity == null) {
+                        String[] departureArray = finalDeparture.split(",");
+                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(Double.parseDouble(departureArray[0]), Double.parseDouble(departureArray[1]), 1);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        String cityName = addresses.get(0).getLocality();
+                        String stateName = addresses.get(0).getAdminArea();
+                        departureCity = cityName + ", " + stateName;
+                    } else if (destinationCity == null) {
+                        String[] destinationArray = finalDestination.split(",");
+                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(Double.parseDouble(destinationArray[0]), Double.parseDouble(destinationArray[1]), 1);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        String cityName = addresses.get(0).getLocality();
+                        String stateName = addresses.get(0).getAdminArea();
+                        destinationCity = cityName + ", " + stateName;
+                    }
                     String lat_dep = finalDeparture + "_" + departureCity;
                     String long_dest = finalDestination + "_" + destinationCity;
                     exploreUpdate.onLocationSelected(lat_dep, long_dest);
@@ -205,6 +229,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     private void getDeviceLocation() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
+
         try {
             if (permissions) {
                 Task<Location> locationDevice = fusedLocationProviderClient.getLastLocation();
@@ -212,6 +237,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
+                            hideKeyBoard();
                             gMap.setMyLocationEnabled(true);
                             Location currentLocation = (Location) task.getResult();
                             if (finalDestination == null) {
@@ -235,6 +261,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void locateDestination() {
+        hideKeyBoard();
         String location = locationSearchText.getText().toString();
 
         Geocoder geocoder = new Geocoder(getContext());
@@ -284,7 +311,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void hideKeyBoard() {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mapView.getWindowToken(), 0);
     }
 
     IExploreUpdate exploreUpdate;

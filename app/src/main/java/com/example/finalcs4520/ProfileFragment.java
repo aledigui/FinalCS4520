@@ -414,7 +414,6 @@ public class ProfileFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // TODO: remove trip from upcoming trips database
                         Toast.makeText(getContext(), "Upcoming trip successfully deleted",
                                 Toast.LENGTH_LONG).show();
                         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
