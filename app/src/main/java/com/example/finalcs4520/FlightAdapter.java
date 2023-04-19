@@ -36,8 +36,8 @@ public class FlightAdapter extends RecyclerView.Adapter<SearchTravelFragment.Vie
     public void onBindViewHolder(@NonNull SearchTravelFragment.ViewHolder holder, int position) {
         Flight flight = flights.get(position);
 
-        holder.depart.setText(flight.getDeparture() + " "+ flight.getDepartureDate() + " " + flight.getDepartureTime());
-        holder.arrive.setText(flight.getArrival() + " "+ flight.getArrivalDate() + " " + flight.getArrivalTime());
+        holder.depart.setText(flight.getDeparture() + " \n"+ flight.getDepartureDate() + " \n" + flight.getDepartureTime());
+        holder.arrive.setText(flight.getArrival() + " \n"+ flight.getArrivalDate() + " \n" + flight.getArrivalTime());
         holder.price.setText(flight.getPrice());
         holder.airline.setText(flight.getAirline());
     }

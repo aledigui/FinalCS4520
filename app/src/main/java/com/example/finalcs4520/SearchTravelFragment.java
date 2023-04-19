@@ -300,7 +300,12 @@ public class SearchTravelFragment extends Fragment {
                                 }
                             }
                         } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(), "Please enter your flexibility", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
