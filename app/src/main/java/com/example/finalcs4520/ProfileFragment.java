@@ -516,56 +516,36 @@ public class ProfileFragment extends Fragment {
                     .into(profileImage);
         }
         if (tripUri != null && imgTripPosition != -1) {
-            // TODO: recycler view check which text it is and then put the pertinent list of trips
-            String imgId = "pastTrip_" + mUser.getEmail() + "_" + imgTripPosition + ".jpg";
-            String imgPath = "tripImages/" + imgId;
-            StorageReference userImageRef = storageRef.child(imgPath);
-            // TODO: check if this is the right URI
-            Uri file = tripUri;
-            UploadTask uploadTask;
-            uploadTask = userImageRef.putFile(file);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Toast.makeText(getContext(), "Unable to save picture. Try again",
-                            Toast.LENGTH_LONG).show();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // In this case we want to put an actual value to pictureMessage so that it changes
-                    // We will download the image associated with the Uri
-                    TripProfile existingPastTrip = pastTripProfile.get(imgTripPosition);
-                    TripProfile tempPastTripProfile = new TripProfile(existingPastTrip.getFromLocation(),
-                            existingPastTrip.getToLocation(), existingPastTrip.getDateTrip(),
-                            existingPastTrip.getTransportations(), true, tripUri);
-                    tempPastTripProfile.setTripImgPath(tripUri);
-                    // setting it back to null so that it doesn't keep the reference
-                    // and stores it in another chat
-                    tripUri = null;
-                    pastTripProfile.set(imgTripPosition, tempPastTripProfile);
-                    Map<String, ArrayList<TripProfile>> chatsCollection = new HashMap<>();
-                    chatsCollection.put("pastTrips", pastTripProfile);
-                    chatsCollection.put("upcomingTrips", tripProfile);
-                    db.collection("userTrips").document(mUser.getEmail())
-                            .set(chatsCollection)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // NOTHING
+            // In this case we want to put an actual value to pictureMessage so that it changes
+            // We will download the image associated with the Uri
+            TripProfile existingPastTrip = pastTripProfile.get(imgTripPosition);
+            TripProfile tempPastTripProfile = new TripProfile(existingPastTrip.getFromLocation(),
+                    existingPastTrip.getToLocation(), existingPastTrip.getDateTrip(),
+                    existingPastTrip.getTransportations(), true, tripUri);
+            tempPastTripProfile.setTripImgPath(tripUri);
+            // setting it back to null so that it doesn't keep the reference
+            // and stores it in another chat
+            tripUri = null;
+            pastTripProfile.set(imgTripPosition, tempPastTripProfile);
+            Map<String, ArrayList<TripProfile>> chatsCollection = new HashMap<>();
+            chatsCollection.put("pastTrips", pastTripProfile);
+            chatsCollection.put("upcomingTrips", tripProfile);
+            db.collection("userTrips").document(mUser.getEmail())
+                    .set(chatsCollection)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // NOTHING
 
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Unable to save image of your trip. Plase try again",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-                }
-            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Unable to save image of your trip. Plase try again",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
 
             recyclerViewLayoutManager = new LinearLayoutManager(this.getContext());
             pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
