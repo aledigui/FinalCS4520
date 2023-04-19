@@ -285,6 +285,7 @@ public class SearchTravelFragment extends Fragment {
                                     Integer layovers = slice.getJSONObject("info").getInt("connection_count");
 
                                     String departure = slice.getJSONObject("departure").getJSONObject("airport").getString("name");
+                                    String date = slice.getJSONObject("departure").getJSONObject("datetime").getString("date");
                                     String departureDate = slice.getJSONObject("departure").getJSONObject("datetime").getString("date_display");
                                     String departureTime = slice.getJSONObject("departure").getJSONObject("datetime").getString("time_12h");
 
@@ -292,7 +293,7 @@ public class SearchTravelFragment extends Fragment {
                                     String arrivalDate = slice.getJSONObject("arrival").getJSONObject("datetime").getString("date_display");
                                     String arrivalTime = slice.getJSONObject("arrival").getJSONObject("datetime").getString("time_12h");
 
-                                    Flight flight = new Flight(price, airline, layovers, departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime);
+                                    Flight flight = new Flight(price, airline, layovers, departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime, date);
                                     flights.add(flight);
 
                                 } catch (JSONException e) {
@@ -303,7 +304,7 @@ public class SearchTravelFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getContext(), "Please enter your flexibility", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "No Flights Found", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
@@ -350,6 +351,7 @@ public class SearchTravelFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView depart, arrive, airline, price;
+        public Button addTrip;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -357,6 +359,7 @@ public class SearchTravelFragment extends Fragment {
             arrive = itemView.findViewById(R.id.textViewOptionEnd);
             airline = itemView.findViewById(R.id.textViewOptionName);
             price = itemView.findViewById(R.id.OptionPrice);
+            addTrip = itemView.findViewById(R.id.ButtonFlightAddToProfile);
         }
     }
 

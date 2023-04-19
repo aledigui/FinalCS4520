@@ -242,14 +242,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                             Location currentLocation = (Location) task.getResult();
                             if (currentLocation == null) {
                                 Toast.makeText(getContext(), "Unable to retrieve your device location. Try again please", Toast.LENGTH_LONG).show();
-                            }
-                            else if (finalDestination == null) {
-                                destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
                             } else {
-                                myLocation = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-                            }
+                                if (finalDestination == null) {
+                                    destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+                                } else {
+                                    myLocation = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+                                }
 
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 15f, "My location");
+                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 15f, "My location");
+                            }
                         } else {
                             Toast.makeText(getContext(), "Unable to retrieve your device location. Try again please", Toast.LENGTH_LONG).show();
                         }

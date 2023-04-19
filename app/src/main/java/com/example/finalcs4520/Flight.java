@@ -1,10 +1,10 @@
 package com.example.finalcs4520;
 
 public class Flight {
-    private String price, airline, departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime;
+    private String price, airline, departure, departureDate, departureTime, arrival, arrivalDate, arrivalTime, date;
     private Integer layovers;
 
-    public Flight(String price, String airline, Integer layovers, String departure, String departureDate, String departureTime, String arrival, String arrivalDate, String arrivalTime) {
+    public Flight(String price, String airline, Integer layovers, String departure, String departureDate, String departureTime, String arrival, String arrivalDate, String arrivalTime, String date) {
         this.price = price;
         this.airline = airline;
         this.layovers = layovers;
@@ -14,6 +14,7 @@ public class Flight {
         this.arrival = arrival;
         this.arrivalDate = arrivalDate;
         this.arrivalTime = arrivalTime;
+        this.date = date;
     }
 
     public String getPrice() {
@@ -86,5 +87,13 @@ public class Flight {
 
     public void setArrivalTime(String arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.arrivalTime = date;
     }
 }
