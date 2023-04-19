@@ -138,6 +138,7 @@ public class PublicTransitSearchFragment extends Fragment {
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (response.isSuccessful()) {
                             try {
+                                routeList.clear();
                                 String responseBody = response.body().string();
                                 JSONObject jsonObject = new JSONObject(responseBody);
                                 JSONArray routes = jsonObject.getJSONArray("routes");
@@ -180,6 +181,9 @@ public class PublicTransitSearchFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if (routeList.size() == 0) {
+                                        Toast.makeText(getContext(), "No routes found", Toast.LENGTH_SHORT).show();
+                                    }
                                     adapter.notifyDataSetChanged();
                                 }
                             });
@@ -188,7 +192,7 @@ public class PublicTransitSearchFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getContext(), response.code() + ": No routes found", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), response.code() + ": Error", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
