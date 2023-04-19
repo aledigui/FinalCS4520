@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,6 +52,12 @@ public class TransitRouteFragment extends Fragment {
     private FirebaseUser mUser;
 
     private FirebaseFirestore db;
+
+    private ImageView profileButtonTR;
+
+    private ImageView searchIconProfileTR;
+    private ImageView addFriendsImgTR;
+    private ImageView exploreButtonTR;
 
     public TransitRouteFragment() {
         // Required empty public constructor
@@ -148,6 +155,36 @@ public class TransitRouteFragment extends Fragment {
             }
         });
 
+        profileButtonTR = rootView.findViewById(R.id.profileButtonTR);
+        searchIconProfileTR = rootView.findViewById(R.id.searchIconProfileTR);
+        addFriendsImgTR = rootView.findViewById(R.id.addFriendsImgTR);
+        exploreButtonTR = rootView.findViewById(R.id.exploreButtonTR);
+
+        profileButtonTR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iTransitRoute.onProfilePessedTR();
+            }
+        });
+        searchIconProfileTR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iTransitRoute.onSearchPressedTR();
+            }
+        });
+        addFriendsImgTR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iTransitRoute.onAddFriendPressdeTR();
+            }
+        });
+        exploreButtonTR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iTransitRoute.onPublicPressedTR();
+            }
+        });
+
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +238,10 @@ public class TransitRouteFragment extends Fragment {
 
     public interface ITransitRoute {
         void onAcceptPressed(String userEmail);
+        void onSearchPressedTR();
+        void onPublicPressedTR();
+        void onAddFriendPressdeTR();
+        void onProfilePessedTR();
     }
 }
 

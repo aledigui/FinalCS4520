@@ -118,6 +118,8 @@ public class ProfileFragment extends Fragment {
 
     private Boolean wasChecked = false;
 
+    private ImageView profileButtonP;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -156,7 +158,7 @@ public class ProfileFragment extends Fragment {
         logOutProfileButton = profileView.findViewById(R.id.logOutProfileButton);
         pastFutureTripsSwitch = profileView.findViewById(R.id.pastFutureTripsSwitch);
         addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
-        //publicButton = profileView.findViewById(R.id.publicButton);
+        profileButtonP = profileView.findViewById(R.id.profileButtonP);
         exploreButton = profileView.findViewById(R.id.exploreButton);
 
         mAuth = FirebaseAuth.getInstance();
@@ -296,12 +298,12 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        /*publicButton.setOnClickListener(new View.OnClickListener() {
+        profileButtonP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                profileUpdate.onPublicPressed();
+                profileUpdate.onProfilePressedP();
             }
-        });*/
+        });
 
 
         locationTag.setOnClickListener(new View.OnClickListener() {
@@ -662,5 +664,7 @@ public class ProfileFragment extends Fragment {
         void onPublicPressed();
 
         void onExplorePressed();
+
+        void onProfilePressedP();
     }
 }

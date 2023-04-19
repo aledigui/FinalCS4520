@@ -1,6 +1,7 @@
 package com.example.finalcs4520;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.icu.text.Edits;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -83,6 +85,12 @@ public class SearchTravelFragment extends Fragment {
     private RecyclerView results;
     private Button searchButton;
     private ProgressBar flightSearchProgressBar;
+
+    private ImageView profileButtonT;
+
+    private ImageView searchIconProfileT;
+    private ImageView addFriendsImgT;
+    private ImageView exploreButtonT;
 
     View.OnClickListener dateListener = view -> {
         TextView locTextView = view.findViewById(view.getId());
@@ -155,6 +163,36 @@ public class SearchTravelFragment extends Fragment {
                 android.R.layout.simple_spinner_item,
                 sortOptions);
         sort.setAdapter(sortAdapter);
+
+        profileButtonT = view.findViewById(R.id.profileButtonT);
+        searchIconProfileT = view.findViewById(R.id.searchIconProfileT);
+        addFriendsImgT = view.findViewById(R.id.addFriendsImgT);
+        exploreButtonT = view.findViewById(R.id.exploreButtonT);
+
+        profileButtonT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchTravel.onProfilePessedT();
+            }
+        });
+        searchIconProfileT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchTravel.onSearchPressedT();
+            }
+        });
+        addFriendsImgT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchTravel.onAddFriendPressdeT();
+            }
+        });
+        exploreButtonT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchTravel.onPublicPressedT();
+            }
+        });
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -284,6 +322,25 @@ public class SearchTravelFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    SearchTravelFragment.ISearchTravel iSearchTravel;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof SearchTravelFragment.ISearchTravel) {
+            iSearchTravel = (SearchTravelFragment.ISearchTravel) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement IFragmentUpdate");
+        }
+    }
+
+    public interface ISearchTravel {
+        void onSearchPressedT();
+        void onPublicPressedT();
+        void onAddFriendPressdeT();
+        void onProfilePessedT();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

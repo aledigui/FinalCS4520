@@ -36,7 +36,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         SearchProfileAdapter.IFromSearchProfileAdapterToActivity,
         ExploreFragment.IExploreUpdate,
         TransitSummaryAdapter.IOpenTransitRoute,
-        TransitRouteFragment.ITransitRoute{
+        TransitRouteFragment.ITransitRoute,
+        PublicTransitSearchFragment.IPublicSearch,
+        SearchProfileFragment.ISearchProfile,
+        SearchTravelFragment.ISearchTravel{
 
     private int screenCamera;
 
@@ -228,6 +231,14 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
+    public void onProfilePressedP() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
+    }
+
+    @Override
     public void openProfile(String userEmail, String myEmail) {
         if (userEmail.equals(myEmail)) {
             // return to main profile screen if you select your own profile
@@ -266,5 +277,141 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
                 .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // TRANSIT ROUT FRAGMENT MENU
+
+    @Override
+    public void onSearchPressedTR() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onPublicPressedTR() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onAddFriendPressdeTR() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onProfilePessedTR() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
+    }
+
+    // PUBLIC TRANSPORT FRAGMENT MENU
+
+    @Override
+    public void onSearchPressedPT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onPublicPressedPT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onAddFriendPressdePT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onProfilePessedPT() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
+    }
+
+    // SEARCH PROFILE FRAGMENT MENU
+
+    @Override
+    public void onSearchPressedPS() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onPublicPressedPS() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onAddFriendPressdePS() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onProfilePessedPS() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
+    }
+
+    // SEARCH TRAVEL FRAGMENT
+
+    @Override
+    public void onSearchPressedT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchTravelFragment(), "travelFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onPublicPressedT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new ExploreFragment(), "exploreFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onAddFriendPressdeT() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new SearchProfileFragment(), "searchFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onProfilePessedT() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
     }
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -49,6 +50,12 @@ public class PublicTransitSearchFragment extends Fragment {
 
     private String destinationCity;
     private String departureCity;
+
+    private ImageView profileButtonPT;
+
+    private ImageView searchIconProfilePT;
+    private ImageView addFriendsImgPT;
+    private ImageView exploreButtonPT;
 
     public PublicTransitSearchFragment() {
         // Required empty public constructor
@@ -117,6 +124,36 @@ public class PublicTransitSearchFragment extends Fragment {
         adapter = new TransitSummaryAdapter(routeList, getContext(), departureCity, destinationCity);
         adapter.setCities(departureCity, destinationCity);
         transitOptionsRecyclerView.setAdapter(adapter);
+
+        profileButtonPT = rootView.findViewById(R.id.profileButtonPT);
+        searchIconProfilePT = rootView.findViewById(R.id.searchIconProfilePT);
+        addFriendsImgPT = rootView.findViewById(R.id.addFriendsImgPT);
+        exploreButtonPT = rootView.findViewById(R.id.exploreButtonPT);
+
+        profileButtonPT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPublicSearch.onProfilePessedPT();
+            }
+        });
+        searchIconProfilePT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPublicSearch.onSearchPressedPT();
+            }
+        });
+        addFriendsImgPT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPublicSearch.onAddFriendPressdePT();
+            }
+        });
+        exploreButtonPT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPublicSearch.onPublicPressedPT();
+            }
+        });
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +255,25 @@ public class PublicTransitSearchFragment extends Fragment {
     public void setCities(String newDeparture, String newDestination) {
         departureCity = newDeparture;
         destinationCity = destinationCity;
+    }
+
+    PublicTransitSearchFragment.IPublicSearch iPublicSearch;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof PublicTransitSearchFragment.IPublicSearch) {
+            iPublicSearch = (PublicTransitSearchFragment.IPublicSearch) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement IFragmentUpdate");
+        }
+    }
+
+    public interface IPublicSearch {
+        void onSearchPressedPT();
+        void onPublicPressedPT();
+        void onAddFriendPressdePT();
+        void onProfilePessedPT();
     }
 
 

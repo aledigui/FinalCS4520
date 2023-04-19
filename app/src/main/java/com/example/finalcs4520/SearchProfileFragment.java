@@ -1,5 +1,6 @@
 package com.example.finalcs4520;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +38,13 @@ public class SearchProfileFragment extends Fragment {
     private Button searchButton;
     private RecyclerView resultsRecyclerView;
     private SearchProfileAdapter resultsAdapter;
+
+    private ImageView profileButtonSearch;
+
+    private ImageView searchIconProfilePS;
+    private ImageView addFriendsImgPS;
+    private ImageView exploreButtonPS;
+
 
     public SearchProfileFragment() {
         // Required empty public constructor
@@ -68,6 +77,35 @@ public class SearchProfileFragment extends Fragment {
 
         nameEditText = rootView.findViewById(R.id.nameEditText);
         searchButton = rootView.findViewById(R.id.searchButton);
+        profileButtonSearch = rootView.findViewById(R.id.profileButtonSearch);
+        searchIconProfilePS = rootView.findViewById(R.id.searchIconProfilePS);
+        addFriendsImgPS = rootView.findViewById(R.id.addFriendsImgPS);
+        exploreButtonPS = rootView.findViewById(R.id.exploreButtonPS);
+
+        profileButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchProfile.onProfilePessedPS();
+            }
+        });
+        searchIconProfilePS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchProfile.onSearchPressedPS();
+            }
+        });
+        addFriendsImgPS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchProfile.onAddFriendPressdePS();
+            }
+        });
+        exploreButtonPS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iSearchProfile.onPublicPressedPS();
+            }
+        });
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,5 +146,24 @@ public class SearchProfileFragment extends Fragment {
         resultsRecyclerView.setAdapter(resultsAdapter);
 
         return rootView;
+    }
+
+    ISearchProfile iSearchProfile;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof SearchProfileFragment.ISearchProfile) {
+            iSearchProfile = (SearchProfileFragment.ISearchProfile) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement IFragmentUpdate");
+        }
+    }
+
+    public interface ISearchProfile {
+        void onSearchPressedPS();
+        void onPublicPressedPS();
+        void onAddFriendPressdePS();
+        void onProfilePessedPS();
     }
 }

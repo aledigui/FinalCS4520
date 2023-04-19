@@ -43,11 +43,11 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="2dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="70dp"
                     android:layout_marginTop="2dp"
                     android:src="@drawable/proof1"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/profileButtonP"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
@@ -55,11 +55,21 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="4dp"
+                    android:layout_marginStart="70dp"
                     android:layout_marginTop="4dp"
                     android:src="@drawable/world"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/addFriendsImg"
                     app:layout_constraintStart_toEndOf="@+id/searchIconProfile"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/profileButtonP"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="32dp"
+                    android:src="@drawable/profilepic"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
