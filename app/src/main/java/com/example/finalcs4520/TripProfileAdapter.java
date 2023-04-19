@@ -29,7 +29,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
     private FirebaseUser mUser;
 
     private FirebaseStorage storage;
-    
+
     private StorageReference storageRef;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -92,7 +92,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
-        String imgId = "pastTrip_" + mUser.getEmail() + "_" + position + ".jpg";
+        String imgId = "pastTrip_" + userEmail + "_" + position + ".jpg";
         String imgPath = "tripImages/" + imgId;
         StorageReference userImageRef = storageRef.child(imgPath);
 
