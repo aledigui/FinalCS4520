@@ -1,5 +1,6 @@
 package com.example.finalcs4520;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -29,7 +29,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.Route;
 
 public class PublicTransitSearchFragment extends Fragment {
     private static final String API_KEY = "Eh9dtzpCdyMnpKu_TPXTyAigqzWCrtAuFwyGBK2CmLg";
@@ -45,8 +44,11 @@ public class PublicTransitSearchFragment extends Fragment {
     private static final String ARG_LOC = "args_loc";
     private static final String ARG_DEST = "args_dest";
 
-    private String departure;
-    private String destination;
+    private String departureLat;
+    private String destinationLong;
+
+    private String destinationCity;
+    private String departureCity;
 
     public PublicTransitSearchFragment() {
         // Required empty public constructor
@@ -56,7 +58,7 @@ public class PublicTransitSearchFragment extends Fragment {
         PublicTransitSearchFragment fragment = new PublicTransitSearchFragment();
         Bundle args = new Bundle();
         args.putString(ARG_LOC, location);
-        args.putString(ARG_DEST, location);
+        args.putString(ARG_DEST, destination);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +70,8 @@ public class PublicTransitSearchFragment extends Fragment {
 
         }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,24 +95,34 @@ public class PublicTransitSearchFragment extends Fragment {
         destinationEditText = rootView.findViewById(R.id.destinationEditText);
         searchButton = rootView.findViewById(R.id.searchButton);
 
-        transitOptionsRecyclerView = rootView.findViewById(R.id.transitOptionsRecyclerView);
-        transitOptionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TransitSummaryAdapter(routeList, getContext());
-        transitOptionsRecyclerView.setAdapter(adapter);
+
 
 
 
         if (getArguments() != null) {
-            departure = getArguments().getString(ARG_LOC);
-            destination = getArguments().getString(ARG_DEST);
-            sourceEditText.setText(departure);
-            destinationEditText.setText(destination);
+            String tempDepLat = getArguments().getString(ARG_LOC);
+            String tempDestLong = getArguments().getString(ARG_DEST);
+            String[] tempDepLatArray = tempDepLat.split("_");
+            String[] tempDestLongArray = tempDestLong.split("_");
+            departureCity = tempDepLatArray[1];
+            departureLat = tempDepLatArray[0];
+            destinationCity = tempDestLongArray[1];
+            destinationLong = tempDestLongArray[0];
+            sourceEditText.setText(departureLat);
+            destinationEditText.setText(destinationLong);
 
         }
+        transitOptionsRecyclerView = rootView.findViewById(R.id.transitOptionsRecyclerView);
+        transitOptionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new TransitSummaryAdapter(routeList, getContext(), departureCity, destinationCity);
+        adapter.setCities(departureCity, destinationCity);
+        transitOptionsRecyclerView.setAdapter(adapter);
+
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Toast.makeText(getContext(), destinationCity + departureCity, Toast.LENGTH_SHORT).show();
                 String source = sourceEditText.getText().toString();
                 String destination = destinationEditText.getText().toString();
 
@@ -196,6 +210,12 @@ public class PublicTransitSearchFragment extends Fragment {
 
         return rootView;
     }
+
+    public void setCities(String newDeparture, String newDestination) {
+        departureCity = newDeparture;
+        destinationCity = destinationCity;
+    }
+
 
     private static class Keys {
         final static String apiKey = "apiKey";

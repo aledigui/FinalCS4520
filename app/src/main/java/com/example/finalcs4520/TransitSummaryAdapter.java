@@ -18,8 +18,13 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
     private ArrayList<TransitRoute> routes;
     private IOpenTransitRoute context;
 
-    public TransitSummaryAdapter(ArrayList<TransitRoute> routes, Context context) {
+    private String departureCity;
+    private String destinationCity;
+
+    public TransitSummaryAdapter(ArrayList<TransitRoute> routes, Context context, String departureCity, String destinationCity) {
         this.routes = routes;
+        this.departureCity = departureCity;
+        this.destinationCity = destinationCity;
         if (context instanceof IOpenTransitRoute) {
             this.context = (IOpenTransitRoute) context;
         }
@@ -45,7 +50,7 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
         holder.getRowCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.openRoute(currentRoute);
+                context.openRoute(currentRoute, departureCity, destinationCity);
             }
         });
     }
@@ -53,6 +58,11 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
     @Override
     public int getItemCount() {
         return routes.size();
+    }
+
+    public void setCities(String newDepartureCity, String newDestinationCity) {
+        departureCity = newDepartureCity;
+        destinationCity = newDestinationCity;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +91,6 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
     }
 
     public interface IOpenTransitRoute {
-        void openRoute(TransitRoute route);
+        void openRoute(TransitRoute route, String departure, String destination);
     }
 }

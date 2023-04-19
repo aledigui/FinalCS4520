@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/rowCard"
         android:layout_width="0dp"
-        android:layout_height="89dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
@@ -30,6 +30,7 @@
                 android:id="@+id/sectionsCountLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:text="TextView"

@@ -174,14 +174,6 @@ public class ProfileFragment extends Fragment {
 
         }
 
-        // ADD TRIPS
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
-        tripProfile.add(new TripProfile("Boston", "New York", "4/11/2023", "Car, Plane", false, null));
 
         DocumentReference docRef = db.collection("userTrips").document(thisUserEmail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -192,19 +184,19 @@ public class ProfileFragment extends Fragment {
                     if (document.exists()) {
                         // UPCOMING
                         // TODO: add trips once user has booked them
-                        /*ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
                         ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
                         for (int i = 0; i < documentHashUpcoming.size(); i++) {
                             String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
                             String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
                             String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
                             String transportations = documentHashUpcoming.get(i).get("transportations").toString();
-                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true);
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
                             tempUpcomingTrips.add(tempUpcomingTrip);
                         }
                         tripProfile = tempUpcomingTrips;
-                        tripProfileAdapter = new TripProfileAdapter(tripProfile, getContext());
-                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);*/
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
                         // PAST
                         ArrayList<TripProfile> tempPastTrips = new ArrayList<>();

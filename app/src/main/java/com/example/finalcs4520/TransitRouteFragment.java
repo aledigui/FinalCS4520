@@ -1,5 +1,6 @@
 package com.example.finalcs4520;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,15 +14,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TransitRouteFragment extends Fragment {
     private static final String ROUTE = "route";
+    private static final String DEPARTURE = "departure";
+    private static final String DESTINATION = "destination";
 
     private TransitRoute route;
     private TransitRouteAdapter adapter;
@@ -29,14 +41,26 @@ public class TransitRouteFragment extends Fragment {
     private RecyclerView sectionsView;
     private Button acceptButton;
 
+    private String departureCity;
+    private String destinationCity;
+    private ArrayList<TripProfile> tripProfile = new ArrayList<TripProfile>();
+    private ArrayList<TripProfile> pastTripProfile = new ArrayList<TripProfile>();
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+
+    private FirebaseFirestore db;
+
     public TransitRouteFragment() {
         // Required empty public constructor
     }
 
-    public static TransitRouteFragment newInstance(TransitRoute route) {
+    public static TransitRouteFragment newInstance(TransitRoute route, String departure, String destinationCity) {
         TransitRouteFragment fragment = new TransitRouteFragment();
         Bundle args = new Bundle();
         args.putSerializable(ROUTE, route);
+        args.putString(DEPARTURE, departure);
+        args.putString(DESTINATION, destinationCity);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,6 +70,10 @@ public class TransitRouteFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.route = (TransitRoute) getArguments().getSerializable(ROUTE);
+
+            // Used to save the trip in an appropiate format
+            this.departureCity = getArguments().getString(DEPARTURE);
+            this.destinationCity = getArguments().getString(DESTINATION);
         }
     }
 
@@ -62,22 +90,86 @@ public class TransitRouteFragment extends Fragment {
         adapter = new TransitRouteAdapter(route);
         sectionsView.setAdapter(adapter);
 
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // UPCOMING
+                        // TODO: add trips once user has booked them
+                        ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
+                        for (int i = 0; i < documentHashUpcoming.size(); i++) {
+                            String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
+                            String transportations = documentHashUpcoming.get(i).get("transportations").toString();
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation,
+                                    toLocation,
+                                    dateTrip,
+                                    transportations,
+                                    false,
+                                    null);
+                            tempUpcomingTrips.add(tempUpcomingTrip);
+                        }
+                        tripProfile = tempUpcomingTrips;
+
+                        // PAST
+                        ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashPast = (ArrayList<HashMap>) document.getData().get("pastTrips");
+                        for (int i = 0; i < documentHashPast.size(); i++) {
+                            String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashPast.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
+                            String transportations = documentHashPast.get(i).get("transportations").toString();
+                            Object imgPath = documentHashPast.get(i).get("tripPicture");
+                            TripProfile tempPastTrip;
+                            if (imgPath != null) {
+                                String tempuri = imgPath.toString();
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, Uri.parse(tempuri));
+                            } else {
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
+                            }
+                            tempPastTrips.add(tempPastTrip);
+                        }
+                        pastTripProfile = tempPastTrips;
+
+                    } else {
+                        Toast.makeText(getContext(), "Unable to get user trips! Please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
+                Calendar c = Calendar.getInstance();
+
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = df.format(c.getTime());
+                Toast.makeText(getContext(), destinationCity + ", " + departureCity, Toast.LENGTH_LONG).show();
+                TripProfile newTripProfile = new TripProfile(departureCity, destinationCity,
+                        formattedDate, "public transport", false, null);
+                Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
+                tripProfile.add(newTripProfile);
+                newCompletedTrips.put("upcomingTrips", tripProfile);
                 newCompletedTrips.put("pastTrips", pastTripProfile);
 
-                db.collection("userTrips").document(tripId)
+                db.collection("userTrips").document(mUser.getEmail())
                         .set(newCompletedTrips)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                compTrip.setCompleted(true);
-                                tripProfile.remove(compTrip);
                                 // TODO: remove trip from upcoming trips database
-                                Toast.makeText(getContext(), "You completed a trip! Congrats!",
+                                Toast.makeText(getContext(), "Saved! Get ready for your upcoming trip!",
                                         Toast.LENGTH_LONG).show();
 
                             }
@@ -85,10 +177,10 @@ public class TransitRouteFragment extends Fragment {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete trip. Try again",
+                                Toast.makeText(getContext(), "Unable to save trip. Try again",
                                         Toast.LENGTH_LONG).show();
                             }
-                        });*/
+                        });
             }
         });
 

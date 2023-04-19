@@ -250,20 +250,15 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     public void onLocationSelected(String location, String destination) {
         // TODO: create a new instance of the public transport
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, PublicTransitSearchFragment.newInstance(location, destination), "searchFragment")
+                .replace(R.id.MainActivityContainer, PublicTransitSearchFragment.newInstance(location, destination), "publicFragment")
                 .addToBackStack(null)
                 .commit();
     }
 
     @Override
-    public void sendCities(String departureCity, String destinationCity) {
-        
-    }
-
-    @Override
-    public void openRoute(TransitRoute route) {
+    public void openRoute(TransitRoute route, String departure, String destination) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, TransitRouteFragment.newInstance(route), "publicFragment")
+                .replace(R.id.MainActivityContainer, TransitRouteFragment.newInstance(route, departure, destination), "routeFragment")
                 .addToBackStack(null)
                 .commit();
     }

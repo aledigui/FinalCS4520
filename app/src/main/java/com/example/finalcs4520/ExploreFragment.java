@@ -164,8 +164,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                     finalDeparture = myLocation;
                 } else if (finalDeparture != null
                         && finalDestination != null) {
-                    exploreUpdate.onLocationSelected(finalDeparture, finalDestination);
-                    exploreUpdate.sendCities(departureCity, destinationCity);
+                    System.out.println(finalDeparture);
+                    System.out.println(finalDestination);
+                    String lat_dep = finalDeparture + "_" + departureCity;
+                    String long_dest = finalDestination + "_" + destinationCity;
+                    exploreUpdate.onLocationSelected(lat_dep, long_dest);
                 } else {
                     Toast.makeText(getContext(), "Please select a departure!", Toast.LENGTH_LONG).show();
                 }
@@ -247,9 +250,17 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         if (addressList.size() > 0) {
             Address address = addressList.get(0);
             // we do this check in order to get the initial departure if the user does not want to locate themselves
-            if (destination != null) {
+            if (finalDestination != null) {
+                String tempDep = "";
+                tempDep += address.getLocality() + ", ";
+                tempDep += address.getAdminArea();
+                departureCity = tempDep;
                 myLocation = address.getLatitude() + "," + address.getLongitude();
             } else {
+                String tempDep = "";
+                tempDep += address.getLocality() + ", ";
+                tempDep += address.getAdminArea();
+                destinationCity = tempDep;
                 destination = address.getLatitude() + "," + address.getLongitude();
             }
 
@@ -289,7 +300,5 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
     public interface IExploreUpdate {
         void onLocationSelected(String location, String destination);
-
-        void sendCities(String departureCity, String destinationCity);
     }
 }
