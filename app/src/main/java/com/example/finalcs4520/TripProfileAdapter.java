@@ -122,6 +122,11 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
         } else {
             holder.getCompleteTripProfile().setVisibility(View.INVISIBLE);
             holder.getDeleteTripProfile().setVisibility(View.INVISIBLE);
+            if (profileTrips.get(position).getTripPicture() != null) {
+                holder.getTripImg().setImageURI(null);
+                Uri newUri = profileTrips.get(position).getTripPicture();
+                holder.getTripImg().setImageURI(newUri);
+            }
         }
 
 

@@ -94,7 +94,7 @@ public class RegisterLogInFragment extends Fragment {
 
     private StorageReference storageRef;
 
-    private static final int PERMISSIONS_CODE = 0x110;
+    private static final int PERMISSIONS_CODE = 0x000;
 
     private View registerView;
 

@@ -58,7 +58,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ProfileFragment extends Fragment {
     private ImageView profileImage;
-    private ImageView publicButton;
+    //private ImageView publicButton;
     private TextView usernameProfile;
     private TextView rankingText;
     private TextView locationProfileHeader;
@@ -156,7 +156,7 @@ public class ProfileFragment extends Fragment {
         logOutProfileButton = profileView.findViewById(R.id.logOutProfileButton);
         pastFutureTripsSwitch = profileView.findViewById(R.id.pastFutureTripsSwitch);
         addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
-        publicButton = profileView.findViewById(R.id.publicButton);
+        //publicButton = profileView.findViewById(R.id.publicButton);
         exploreButton = profileView.findViewById(R.id.exploreButton);
 
         mAuth = FirebaseAuth.getInstance();
@@ -296,12 +296,12 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        publicButton.setOnClickListener(new View.OnClickListener() {
+        /*publicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 profileUpdate.onPublicPressed();
             }
-        });
+        });*/
 
 
         locationTag.setOnClickListener(new View.OnClickListener() {
@@ -544,6 +544,7 @@ public class ProfileFragment extends Fragment {
                     pastTripProfile.set(imgTripPosition, tempPastTripProfile);
                     Map<String, ArrayList<TripProfile>> chatsCollection = new HashMap<>();
                     chatsCollection.put("pastTrips", pastTripProfile);
+                    chatsCollection.put("upcomingTrips", tripProfile);
                     db.collection("userTrips").document(mUser.getEmail())
                             .set(chatsCollection)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
