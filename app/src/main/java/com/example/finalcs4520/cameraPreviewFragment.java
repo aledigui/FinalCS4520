@@ -115,9 +115,6 @@ public class cameraPreviewFragment extends Fragment {
                     if (screenSaver == 0) {
                         // sign up image
                         iPreviewImg.onUploadSignUp(imageDisplayed);
-                    } else if (screenSaver == 1) {
-                        // trip image
-                        iPreviewImg.onUploadTripPicture(imageDisplayed);
                     } else if (screenSaver == 2) {
                         // edit profile
                         // update the storage
@@ -143,6 +140,35 @@ public class cameraPreviewFragment extends Fragment {
                                 iPreviewImg.onUploadProfilePicture(imageDisplayed);
                             }
                         });
+
+                    } else {
+                        // This is for the trip images
+                            // trip image
+                            String email = mUser.getEmail();
+                            String newPos = String.valueOf(screenSaver);
+                            newPos = newPos.substring(1, newPos.length());
+                            int savedPos = Integer.parseInt(newPos);
+                            String imageId = "pastTrip_" + email + "_" + savedPos + ".jpg";
+                            String imgPath = "tripImages/" + imageId;
+                            StorageReference usernameRef = storageRef.child(imageId);
+                            StorageReference userImageRef = storageRef.child(imgPath);
+
+                            Uri file = imageDisplayed;
+                            UploadTask uploadTask;
+                            uploadTask = userImageRef.putFile(file);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                    Toast.makeText(getContext(), "Unable to save picture. Try again",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    iPreviewImg.onUploadTripPicture(imageDisplayed);
+                                }
+                            });
 
                     }
                 }

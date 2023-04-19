@@ -208,8 +208,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     @Override
     public void onTripImgPressed(int position) {
         positionTrip = position;
+        String stringpos = "3" + positionTrip;
+        int newPos = Integer.valueOf(stringpos);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, CameraFragment.newInstance(1), "cameraFragment")
+                .replace(R.id.MainActivityContainer, CameraFragment.newInstance(newPos), "cameraFragment")
                 .addToBackStack(null)
                 .commit();
     }

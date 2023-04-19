@@ -520,6 +520,7 @@ public class ProfileFragment extends Fragment {
             String imgId = "pastTrip_" + mUser.getEmail() + "_" + imgTripPosition + ".jpg";
             String imgPath = "tripImages/" + imgId;
             StorageReference userImageRef = storageRef.child(imgPath);
+            // TODO: check if this is the right URI
             Uri file = tripUri;
             UploadTask uploadTask;
             uploadTask = userImageRef.putFile(file);
