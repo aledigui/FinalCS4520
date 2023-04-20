@@ -36,6 +36,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -99,6 +100,7 @@ public class SearchTravelFragment extends Fragment {
     private ImageView searchIconProfileT;
     private ImageView addFriendsImgT;
     private ImageView exploreButtonT;
+    ArrayList<Flight> flights;
 
     View.OnClickListener dateListener = view -> {
         TextView locTextView = view.findViewById(view.getId());
@@ -148,6 +150,7 @@ public class SearchTravelFragment extends Fragment {
         searchButton = view.findViewById(R.id.SearchButtonTravel);
         flightSearchProgressBar = view.findViewById(R.id.FlightSearchProgressBar);
 
+        flights = new ArrayList<Flight>();;
 
         startDate.setOnClickListener(dateListener);
         endDate.setOnClickListener(dateListener);
@@ -155,7 +158,7 @@ public class SearchTravelFragment extends Fragment {
 
         List<String> filters = new ArrayList<String>();
         filters.add("No Filters");
-        filters.add("No Transfers");
+        // filters.add("No Transfers");
 
         ArrayAdapter<String> filtersAdapter = new ArrayAdapter<String>(this.getContext(),
                 android.R.layout.simple_spinner_item,
@@ -165,12 +168,42 @@ public class SearchTravelFragment extends Fragment {
 
         List<String> sortOptions = new ArrayList<String>();
         sortOptions.add("Lowest Price");
-        sortOptions.add("Shortest Time");
+        sortOptions.add("Highest Price");
 
         ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(this.getContext(),
                 android.R.layout.simple_spinner_item,
                 sortOptions);
         sort.setAdapter(sortAdapter);
+
+        sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    flights.sort(new Comparator<Flight>() {
+                        @Override
+                        public int compare(Flight f1, Flight f2) {
+                            return (int) (Float.valueOf(f1.getPrice()) - Float.valueOf(f2.getPrice()));
+                        }
+                    });
+                    results.setAdapter(new FlightAdapter(flights, getContext()));
+                    results.setLayoutManager(new LinearLayoutManager(getContext()));
+                } else if (i == 1) {
+                    flights.sort(new Comparator<Flight>() {
+                        @Override
+                        public int compare(Flight f1, Flight f2) {
+                            return (int) (Float.valueOf(f2.getPrice()) - Float.valueOf(f1.getPrice()));
+                        }
+                    });
+                    results.setAdapter(new FlightAdapter(flights, getContext()));
+                    results.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         profileButtonT = view.findViewById(R.id.profileButtonT);
         searchIconProfileT = view.findViewById(R.id.searchIconProfileT);
@@ -264,7 +297,7 @@ public class SearchTravelFragment extends Fragment {
                         .addHeader("X-RapidAPI-Host", "priceline-com-provider.p.rapidapi.com")
                         .build();
 
-                ArrayList<Flight> flights = new ArrayList<Flight>();
+                flights = new ArrayList<Flight>();
 
 
                 client.newCall(request).enqueue(new Callback() {
@@ -376,8 +409,11 @@ public class SearchTravelFragment extends Fragment {
 
     public interface ISearchTravel {
         void onSearchPressedT();
+
         void onPublicPressedT();
+
         void onAddFriendPressdeT();
+
         void onProfilePessedT();
     }
 
