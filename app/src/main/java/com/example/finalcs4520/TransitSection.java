@@ -1,6 +1,8 @@
 package com.example.finalcs4520;
 
-public class TransitSection {
+import java.io.Serializable;
+
+public class TransitSection implements Serializable {
     private String type;
     private String departureTime;
     private String departureName;
