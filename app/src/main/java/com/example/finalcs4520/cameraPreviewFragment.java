@@ -84,6 +84,7 @@ public class cameraPreviewFragment extends Fragment {
         retakeButton = preview.findViewById(R.id.retakeButton);
         uploadButton = preview.findViewById(R.id.uploadButton);
         previewImg = preview.findViewById(R.id.previewImg);
+        previewImg.setImageURI(imageDisplayed);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
