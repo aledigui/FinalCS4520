@@ -37,12 +37,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -149,6 +157,10 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         profileView = inflater.inflate(R.layout.fragment_profile, container, false);
+        if (!isInternetAvailable()) {
+            Toast.makeText(getContext(), "No internet connection",
+                    Toast.LENGTH_LONG).show();
+        }
 
         // declaring the elements in the UI
         profileImage = profileView.findViewById(R.id.profileImage);
@@ -163,6 +175,8 @@ public class ProfileFragment extends Fragment {
         profileButtonP = profileView.findViewById(R.id.profileButtonP);
         exploreButton = profileView.findViewById(R.id.exploreButton);
         infoImage = profileView.findViewById(R.id.infoImage);
+
+
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -278,7 +292,13 @@ public class ProfileFragment extends Fragment {
             profileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    profileUpdate.onImgPressed();
+
+                    if (isInternetAvailable()) {
+                        profileUpdate.onImgPressed();
+                    } else {
+                        Toast.makeText(getContext(), "Internet not available",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -288,30 +308,47 @@ public class ProfileFragment extends Fragment {
         pastFutureTripsSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
-                    pastFutureTripsSwitch.setText("Past Trips");
-                    tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
+                if (isInternetAvailable()) {
+                    if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips")) {
+                        pastFutureTripsSwitch.setText("Past Trips");
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
 
-                } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")) {
-                    pastFutureTripsSwitch.setText("Upcoming Trips");
-                    tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                    } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips")) {
+                        pastFutureTripsSwitch.setText("Upcoming Trips");
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                    }
+                    pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
                 }
-                pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
-
+                else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         infoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                profileUpdate.onInfoPressed();
+                if(isInternetAvailable()) {
+                    profileUpdate.onInfoPressed();
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         profileButtonP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                profileUpdate.onProfilePressedP();
+                if(isInternetAvailable()) {
+                    profileUpdate.onProfilePressedP();
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -319,10 +356,14 @@ public class ProfileFragment extends Fragment {
         locationTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (thisUserEmail.equals(mUser.getEmail())) {
-                    getUserLocation();
+                if (isInternetAvailable()) {
+                    if (thisUserEmail.equals(mUser.getEmail())) {
+                        getUserLocation();
 
-
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -331,24 +372,40 @@ public class ProfileFragment extends Fragment {
         addFriendsImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wasChecked = pastFutureTripsSwitch.isChecked();
-                profileUpdate.onAddFriendsPressed();
+                if (isInternetAvailable()) {
+                    wasChecked = pastFutureTripsSwitch.isChecked();
+                    profileUpdate.onAddFriendsPressed();
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         exploreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wasChecked = pastFutureTripsSwitch.isChecked();
-                profileUpdate.onExplorePressed();
+                if (isInternetAvailable()) {
+                    wasChecked = pastFutureTripsSwitch.isChecked();
+                    profileUpdate.onExplorePressed();
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
         searchIconProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wasChecked = pastFutureTripsSwitch.isChecked();
-                profileUpdate.onSearchPressed();
+                if (isInternetAvailable()) {
+                    wasChecked = pastFutureTripsSwitch.isChecked();
+                    profileUpdate.onSearchPressed();
+                } else {
+                    Toast.makeText(getContext(), "Internet not available",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -509,6 +566,26 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     public void setImgTripPosition(int position) {

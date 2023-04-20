@@ -34,10 +34,18 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,6 +135,11 @@ public class RegisterLogInFragment extends Fragment {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         registerView = inflater.inflate(R.layout.fragment_register_log_in, container, false);
+
+        if (!isInternetAvailable()) {
+            Toast.makeText(getContext(), "No internet connection",
+                    Toast.LENGTH_LONG).show();
+        }
 
         // FIREBASE
         // TODO: set up the firebase and storage account
@@ -475,6 +488,26 @@ public class RegisterLogInFragment extends Fragment {
         signUpImage.setImageURI(null);
         signUpImage.setImageURI(newUri);
 
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     private void createTripDatabase(String email) {
