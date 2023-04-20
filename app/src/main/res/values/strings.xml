@@ -110,4 +110,5 @@
     <string name="Accept">Accept</string>
     <string name="FlightResultButton">Add</string>
     <string name="dollarStr">$</string>
+    <string name="infot">Click each button to find out what it does!</string>
 </resources>
