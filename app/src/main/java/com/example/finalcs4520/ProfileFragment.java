@@ -436,10 +436,11 @@ public class ProfileFragment extends Fragment {
 
         // you can't delete any past trips. Thus the size is permanent
         // making each id unique
+        tripProfile.remove(compTrip);
         String tripId = mUser.getEmail();
         compTrip.setCompleted(true);
         pastTripProfile.add(compTrip);
-        tripProfile.remove(compTrip);
+
 
         Map<String, ArrayList<TripProfile>> newCompletedTrips = new HashMap<>();
         newCompletedTrips.put("pastTrips", pastTripProfile);
