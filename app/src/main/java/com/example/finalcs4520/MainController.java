@@ -429,11 +429,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onAcceptClicked(String userEmail) {
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
-                .addToBackStack(null)
-                .commit();*/
-        getSupportFragmentManager().popBackStack();
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
     }
 
     @Override
