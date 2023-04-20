@@ -24,9 +24,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class SearchProfileFragment extends Fragment {
 
@@ -110,6 +118,10 @@ public class SearchProfileFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable()) {
+                    Toast.makeText(getContext(), "No network connection", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String queryUsername = nameEditText.getText().toString();
                 firestore.collection("tripRegisteredUsers")
                         .whereGreaterThanOrEqualTo("username", queryUsername)
@@ -146,6 +158,25 @@ public class SearchProfileFragment extends Fragment {
         resultsRecyclerView.setAdapter(resultsAdapter);
 
         return rootView;
+    }
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     ISearchProfile iSearchProfile;

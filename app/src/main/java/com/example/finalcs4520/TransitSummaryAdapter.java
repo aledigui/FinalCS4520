@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -12,7 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAdapter.ViewHolder> {
     private ArrayList<TransitRoute> routes;
@@ -50,6 +59,10 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
         holder.getRowCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable()) {
+                    Toast.makeText(view.getContext(), "Internet not available", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 context.openRoute(currentRoute, departureCity, destinationCity);
             }
         });
@@ -63,6 +76,26 @@ public class TransitSummaryAdapter extends RecyclerView.Adapter<TransitSummaryAd
     public void setCities(String newDepartureCity, String newDestinationCity) {
         departureCity = newDepartureCity;
         destinationCity = newDestinationCity;
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

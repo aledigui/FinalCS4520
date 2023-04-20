@@ -437,6 +437,7 @@ public class ProfileFragment extends Fragment {
         // you can't delete any past trips. Thus the size is permanent
         // making each id unique
         String tripId = mUser.getEmail();
+        compTrip.setCompleted(true);
         pastTripProfile.add(compTrip);
         tripProfile.remove(compTrip);
 
@@ -449,7 +450,6 @@ public class ProfileFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        compTrip.setCompleted(true);
 
                         // TODO: remove trip from upcoming trips database
                         Toast.makeText(getContext(), "You completed a trip! Congrats!",

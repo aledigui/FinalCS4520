@@ -24,8 +24,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdapter.ViewHolder> {
 
@@ -82,9 +90,34 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
         holder.getUserInfoContainer().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable()) {
+                    Toast.makeText(view.getContext(), "No internet available",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
                 listener.openProfile(currUser.getEmail(), mUser.getEmail());
             }
         });
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     @Override

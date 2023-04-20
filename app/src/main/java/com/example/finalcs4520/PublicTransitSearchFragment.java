@@ -21,7 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -159,6 +167,10 @@ public class PublicTransitSearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable()) {
+                    Toast.makeText(getContext(), "No internet available", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //Toast.makeText(getContext(), destinationCity + departureCity, Toast.LENGTH_SHORT).show();
                 String source = sourceEditText.getText().toString();
                 String destination = destinationEditText.getText().toString();
@@ -255,6 +267,25 @@ public class PublicTransitSearchFragment extends Fragment {
     public void setCities(String newDeparture, String newDestination) {
         departureCity = newDeparture;
         destinationCity = destinationCity;
+    }
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     PublicTransitSearchFragment.IPublicSearch iPublicSearch;

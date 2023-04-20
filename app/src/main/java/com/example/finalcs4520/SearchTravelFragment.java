@@ -32,10 +32,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -198,6 +206,10 @@ public class SearchTravelFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable()) {
+                    Toast.makeText(getActivity(), "No network connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 // Input Validation
                 String leave = origin.getText().toString();
@@ -328,6 +340,26 @@ public class SearchTravelFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     SearchTravelFragment.ISearchTravel iSearchTravel;

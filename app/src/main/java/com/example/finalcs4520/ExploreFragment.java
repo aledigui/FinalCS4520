@@ -38,9 +38,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -132,30 +140,15 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 }
                 getDeviceLocation();
                 gMap.setMyLocationEnabled(true);
-
-/*                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull LatLng latLng) {
-
-                        selectLocationButton.setVisibility(View.VISIBLE);
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(latLng);
-                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                        googleMap.clear();
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                        googleMap.addMarker(markerOptions);
-                        if (destination != null) {
-                            myLocation = "Departure: " + latLng.latitude + " , " + latLng.longitude;
-                        } else {
-                            destination = "Departure: " + latLng.latitude + " , " + latLng.longitude;
-                        }
-                    }
-                });*/
             }
         });
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable())  {
+                    Toast.makeText(getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (saveButton.getText().toString().contains("Destination") && destination != null) {
                     saveButton.setVisibility(View.INVISIBLE);
                     saveButton.setText("Save Departure");
@@ -203,7 +196,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (!isInternetAvailable())  {
+                    Toast.makeText(getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 getDeviceLocation();
                 saveButton.setVisibility(View.VISIBLE);
 
@@ -213,6 +209,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         searchButtonLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isInternetAvailable())  {
+                    Toast.makeText(getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 saveButton.setVisibility(View.VISIBLE);
                 locateDestination();
                 locationSearchText.setText("");
@@ -320,6 +320,26 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mapView.getWindowToken(), 0);
+    }
+
+    private boolean isInternetAvailable() {
+        InetAddress inetAddress = null;
+        try {
+            Future<InetAddress> future = Executors.newSingleThreadExecutor().submit(new Callable<InetAddress>() {
+                @Override
+                public InetAddress call() {
+                    try {
+                        return InetAddress.getByName("google.com");
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+                }
+            });
+            inetAddress = future.get(1000, TimeUnit.MILLISECONDS);
+            future.cancel(true);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+        }
+        return inetAddress != null && !inetAddress.equals("");
     }
 
     IExploreUpdate exploreUpdate;

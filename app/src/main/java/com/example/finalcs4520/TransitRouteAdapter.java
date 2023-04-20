@@ -38,6 +38,7 @@ public class TransitRouteAdapter extends RecyclerView.Adapter<TransitRouteAdapte
         return route.getSections().size();
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView sectionNameText;
         private final TextView sectionTypeText;

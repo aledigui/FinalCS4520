@@ -143,7 +143,7 @@ public class cameraPreviewFragment extends Fragment {
                         });
 
                     } else {
-                        // This is for the trip images
+                            // This is for the trip images
                             // trip image
                             String email = mUser.getEmail();
                             String newPos = String.valueOf(screenSaver);
