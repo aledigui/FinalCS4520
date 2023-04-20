@@ -75,7 +75,7 @@ public class InfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (textPlaneInfo.getText().toString().equals("")) {
-                    textPlaneInfo.setText("Want to explore the world by plane? Type the airport codes of the airport of departure and destination, your dates, how flexible you are, and sort by price, click search, and choose your flight!");
+                    textPlaneInfo.setText("Want to explore the world by plane? Type the codes of the departure and destination airports, your dates, how flexible you are, and sort by price, click search, and choose your flight!");
                 } else {
                     textPlaneInfo.setText("");
                 }

@@ -56,11 +56,12 @@
 
         <TextView
             android:id="@+id/exploreinfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/exploreInfo"
+            app:layout_constraintEnd_toEndOf="@+id/textPlaneInfo"
             app:layout_constraintStart_toStartOf="@+id/textPlaneInfo"
             app:layout_constraintTop_toTopOf="@+id/exploreInfo" />
 
@@ -75,11 +76,12 @@
 
         <TextView
             android:id="@+id/friendsInfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/friendsInfo"
+            app:layout_constraintEnd_toEndOf="@+id/exploreinfoText"
             app:layout_constraintStart_toStartOf="@+id/exploreinfoText"
             app:layout_constraintTop_toTopOf="@+id/friendsInfo" />
 
@@ -94,12 +96,12 @@
 
         <TextView
             android:id="@+id/profileInfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/profileInfo"
+            app:layout_constraintEnd_toEndOf="@+id/friendsInfoText"
             app:layout_constraintStart_toEndOf="@+id/profileInfo"
             app:layout_constraintStart_toStartOf="@+id/friendsInfoText"
             app:layout_constraintTop_toTopOf="@+id/profileInfo" />
@@ -115,11 +117,12 @@
 
         <TextView
             android:id="@+id/mapInfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/mapInfo"
+            app:layout_constraintEnd_toEndOf="@+id/profileInfoText"
             app:layout_constraintStart_toStartOf="@+id/profileInfoText"
             app:layout_constraintTop_toTopOf="@+id/mapInfo" />
 
@@ -134,11 +137,12 @@
 
         <TextView
             android:id="@+id/confirmInfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/confirmInfo"
+            app:layout_constraintEnd_toEndOf="@+id/mapInfoText"
             app:layout_constraintStart_toStartOf="@+id/mapInfoText"
             app:layout_constraintTop_toTopOf="@+id/confirmInfo" />
 
@@ -153,11 +157,12 @@
 
         <TextView
             android:id="@+id/deleteInfoText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/empty_string"
             android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/deleteInfo"
+            app:layout_constraintEnd_toEndOf="@+id/confirmInfoText"
             app:layout_constraintStart_toStartOf="@+id/confirmInfoText"
             app:layout_constraintTop_toTopOf="@+id/deleteInfo" />
 
@@ -167,7 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:text="@string/infot"
-            android:textColor="#000000"
+            android:textColor="#CF1D1D"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
