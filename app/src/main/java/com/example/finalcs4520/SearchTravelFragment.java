@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,9 +113,7 @@ public class SearchTravelFragment extends Fragment {
                     month = Calendar.getInstance().get(2);
                     year = Calendar.getInstance().get(1);
                 } else {
-                    Log.d("final", locTextView.getText().toString());
                     String[] dateParts = locTextView.getText().toString().split("-");
-                    Log.d("final", locTextView.getText().toString());
                     day = Integer.valueOf(dateParts[2]);
                     month = Integer.valueOf(dateParts[1]) - 1;
                     year = Integer.valueOf(dateParts[0]);
@@ -310,16 +307,10 @@ public class SearchTravelFragment extends Fragment {
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         try {
                             String body = response.body().string();
-                            Log.d("final", body);
                             JSONObject myjson = new JSONObject(body);
                             JSONObject options = myjson.getJSONObject("getAirFlightRoundTrip").getJSONObject("results").getJSONObject("result").getJSONObject("itinerary_data");
 
-                            Log.d("final", "options are: " + options.toString());
-
-                            Log.d("final", "number of options:" + options.length());
-
                             for (int i = 0; i < options.length(); i++) {
-                                Log.d("final", "progress: " + i);
 
                                 try {
                                     JSONObject option = options.getJSONObject("itinerary_" + i);
@@ -361,7 +352,6 @@ public class SearchTravelFragment extends Fragment {
                                 results.setAdapter(new FlightAdapter(flights, getContext()));
                                 results.setLayoutManager(new LinearLayoutManager(getContext()));
 
-                                Log.d("final", flights.toString());
                                 flightSearchProgressBar.setVisibility(View.INVISIBLE);
                                 searchButton.setEnabled(true);
                             }
