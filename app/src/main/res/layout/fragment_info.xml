@@ -49,10 +49,10 @@
             android:id="@+id/exploreInfo"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
             android:src="@drawable/world"
             app:layout_constraintStart_toStartOf="@+id/planeInfo"
-            app:layout_constraintTop_toBottomOf="@+id/textPlaneInfo" />
+            app:layout_constraintTop_toBottomOf="@+id/planeInfo" />
 
         <TextView
             android:id="@+id/exploreinfoText"
@@ -69,10 +69,10 @@
             android:id="@+id/friendsInfo"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
             android:src="@drawable/proof1"
             app:layout_constraintStart_toStartOf="@+id/exploreInfo"
-            app:layout_constraintTop_toBottomOf="@+id/exploreinfoText" />
+            app:layout_constraintTop_toBottomOf="@+id/exploreInfo" />
 
         <TextView
             android:id="@+id/friendsInfoText"
@@ -92,7 +92,7 @@
             android:layout_marginTop="40dp"
             android:src="@drawable/profilepic"
             app:layout_constraintStart_toStartOf="@+id/friendsInfo"
-            app:layout_constraintTop_toBottomOf="@+id/friendsInfoText" />
+            app:layout_constraintTop_toBottomOf="@+id/friendsInfo" />
 
         <TextView
             android:id="@+id/profileInfoText"
@@ -113,7 +113,7 @@
             android:layout_marginTop="40dp"
             android:src="@android:drawable/ic_dialog_map"
             app:layout_constraintStart_toStartOf="@+id/profileInfo"
-            app:layout_constraintTop_toBottomOf="@+id/profileInfoText" />
+            app:layout_constraintTop_toBottomOf="@+id/profileInfo" />
 
         <TextView
             android:id="@+id/mapInfoText"
@@ -133,7 +133,7 @@
             android:layout_marginTop="40dp"
             android:src="@drawable/comp3"
             app:layout_constraintStart_toStartOf="@+id/mapInfo"
-            app:layout_constraintTop_toBottomOf="@+id/mapInfoText" />
+            app:layout_constraintTop_toBottomOf="@+id/mapInfo" />
 
         <TextView
             android:id="@+id/confirmInfoText"
@@ -153,7 +153,7 @@
             android:layout_marginTop="40dp"
             android:src="@android:drawable/ic_menu_delete"
             app:layout_constraintStart_toStartOf="@+id/confirmInfo"
-            app:layout_constraintTop_toBottomOf="@+id/confirmInfoText" />
+            app:layout_constraintTop_toBottomOf="@+id/confirmInfo" />
 
         <TextView
             android:id="@+id/deleteInfoText"
