@@ -104,6 +104,8 @@ public class ProfileFragment extends Fragment {
 
     private LocationManager locationManager;
 
+    private ImageView infoImage;
+
 
     private boolean gps_permission = false;
     private boolean network_permission = false;
@@ -160,6 +162,7 @@ public class ProfileFragment extends Fragment {
         addFriendsImg = profileView.findViewById(R.id.addFriendsImg);
         profileButtonP = profileView.findViewById(R.id.profileButtonP);
         exploreButton = profileView.findViewById(R.id.exploreButton);
+        infoImage = profileView.findViewById(R.id.infoImage);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -295,6 +298,13 @@ public class ProfileFragment extends Fragment {
                 }
                 pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
 
+            }
+        });
+
+        infoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileUpdate.onInfoPressed();
             }
         });
 
@@ -647,5 +657,7 @@ public class ProfileFragment extends Fragment {
         void onExplorePressed();
 
         void onProfilePressedP();
+
+        void onInfoPressed();
     }
 }

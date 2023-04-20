@@ -110,10 +110,12 @@
     <Button
         android:id="@+id/searchButton"
         android:layout_width="95dp"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="#3F51B5"
         android:text="@string/Search"
+        app:layout_constraintBottom_toBottomOf="@+id/nameEditTextCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -40,7 +40,8 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
         PublicTransitSearchFragment.IPublicSearch,
         SearchProfileFragment.ISearchProfile,
         SearchTravelFragment.ISearchTravel,
-        FlightAdapter.IFlightAdapter{
+        FlightAdapter.IFlightAdapter,
+        InfoFragment.IInfoProfile{
 
     private int screenCamera;
 
@@ -242,6 +243,14 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
     }
 
     @Override
+    public void onInfoPressed() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.MainActivityContainer, new InfoFragment(), "infoFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
     public void openProfile(String userEmail, String myEmail) {
         if (userEmail.equals(myEmail)) {
             // return to main profile screen if you select your own profile
@@ -424,5 +433,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
                 .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressedInfo() {
+        getSupportFragmentManager().popBackStack();
     }
 }
