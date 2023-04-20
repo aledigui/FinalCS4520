@@ -618,9 +618,68 @@ public class ProfileFragment extends Fragment {
                     .centerCrop()
                     .into(profileImage);
         }
+        DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // UPCOMING
+                        ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
+                        for (int i = 0; i < documentHashUpcoming.size(); i++) {
+                            String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
+                            String transportations = documentHashUpcoming.get(i).get("transportations").toString();
+                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, false, null);
+                            tempUpcomingTrips.add(tempUpcomingTrip);
+                        }
+                        tripProfile = tempUpcomingTrips;
+                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+                        // PAST
+                        ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
+                        ArrayList<HashMap> documentHashPast = (ArrayList<HashMap>) document.getData().get("pastTrips");
+                        for (int i = 0; i < documentHashPast.size(); i++) {
+                            String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
+                            String toLocation = documentHashPast.get(i).get("toLocation").toString();
+                            String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
+                            String transportations = documentHashPast.get(i).get("transportations").toString();
+                            Object imgPath = documentHashPast.get(i).get("tripPicture");
+                            TripProfile tempPastTrip;
+                            if (imgPath != null) {
+                                String tempuri = imgPath.toString();
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, Uri.parse(tempuri));
+                            } else {
+                                tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
+                            }
+
+                            tempPastTrips.add(tempPastTrip);
+                        }
+                        pastTripProfile = tempPastTrips;
+
+                        if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips") || !wasChecked) {
+                            tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
+
+                        } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips") || wasChecked) {
+                            tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
+                        }
+                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
+
+                    } else {
+
+                    }
+                }
+            }
+        });
         if (tripUri != null && imgTripPosition != -1) {
             // In this case we want to put an actual value to pictureMessage so that it changes
             // We will download the image associated with the Uri
+            tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
+            pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
             TripProfile existingPastTrip = pastTripProfile.get(imgTripPosition);
             TripProfile tempPastTripProfile = new TripProfile(existingPastTrip.getFromLocation(),
                     existingPastTrip.getToLocation(), existingPastTrip.getDateTrip(),
@@ -654,65 +713,6 @@ public class ProfileFragment extends Fragment {
             pastUpcomingTripRVProfile.setLayoutManager(recyclerViewLayoutManager);
             tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
             pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
-
-            DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            // UPCOMING
-                            // TODO: add trips once user has booked them
-                        ArrayList<TripProfile> tempUpcomingTrips = new ArrayList<>();
-                        ArrayList<HashMap> documentHashUpcoming= (ArrayList<HashMap>) document.getData().get("upcomingTrips");
-                        for (int i = 0; i < documentHashUpcoming.size(); i++) {
-                            String fromLocation = documentHashUpcoming.get(i).get("fromLocation").toString();
-                            String toLocation = documentHashUpcoming.get(i).get("toLocation").toString();
-                            String dateTrip = documentHashUpcoming.get(i).get("dateTrip").toString();
-                            String transportations = documentHashUpcoming.get(i).get("transportations").toString();
-                            TripProfile tempUpcomingTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, false, null);
-                            tempUpcomingTrips.add(tempUpcomingTrip);
-                        }
-                        tripProfile = tempUpcomingTrips;
-                        tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
-                        pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
-
-                            // PAST
-                            ArrayList<TripProfile> tempPastTrips = new ArrayList<>();
-                            ArrayList<HashMap> documentHashPast = (ArrayList<HashMap>) document.getData().get("pastTrips");
-                            for (int i = 0; i < documentHashPast.size(); i++) {
-                                String fromLocation = documentHashPast.get(i).get("fromLocation").toString();
-                                String toLocation = documentHashPast.get(i).get("toLocation").toString();
-                                String dateTrip = documentHashPast.get(i).get("dateTrip").toString();
-                                String transportations = documentHashPast.get(i).get("transportations").toString();
-                                Object imgPath = documentHashPast.get(i).get("tripPicture");
-                                TripProfile tempPastTrip;
-                                if (imgPath != null) {
-                                    String tempuri = imgPath.toString();
-                                    tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, Uri.parse(tempuri));
-                                } else {
-                                    tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
-                                }
-
-                                tempPastTrips.add(tempPastTrip);
-                            }
-                            pastTripProfile = tempPastTrips;
-
-                            if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips") || !wasChecked) {
-                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());
-
-                            } else if (pastFutureTripsSwitch.getText().toString().equals("Past Trips") || wasChecked) {
-                                tripProfileAdapter = new TripProfileAdapter(thisUserEmail, pastTripProfile, getContext());
-                            }
-                            pastUpcomingTripRVProfile.setAdapter(tripProfileAdapter);
-
-                        } else {
-
-                        }
-                    }
-                }
-            });
 
 
         }

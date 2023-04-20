@@ -29,9 +29,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAoZ-GCidzJ6cBjl19xuRbKGG_P_SvmkIo" />
         <activity
-            android:name=".SearchTravelFragment"
-            android:exported="false" />
-        <activity
             android:name=".MainController"
             android:exported="true">
             <intent-filter>
