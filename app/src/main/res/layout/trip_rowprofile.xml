@@ -54,7 +54,7 @@
                 android:textColor="#000000"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/dateText"
-                app:layout_constraintTop_toBottomOf="@+id/fromText" />
+                app:layout_constraintTop_toBottomOf="@+id/fromLocation" />
 
             <TextView
                 android:id="@+id/dateText"
@@ -65,7 +65,7 @@
                 android:textColor="#000000"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/transportationText"
-                app:layout_constraintTop_toBottomOf="@+id/toText" />
+                app:layout_constraintTop_toBottomOf="@+id/toLocation" />
 
             <TextView
                 android:id="@+id/transportationText"
@@ -94,22 +94,26 @@
 
             <TextView
                 android:id="@+id/fromLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:layout_marginStart="4dp"
                 android:text="@string/empty_string"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="@+id/fromText"
+                app:layout_constraintEnd_toStartOf="@+id/completeTripImg"
                 app:layout_constraintStart_toEndOf="@+id/fromText"
                 app:layout_constraintTop_toTopOf="@+id/fromText" />
 
             <TextView
                 android:id="@+id/toLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 android:text="@string/empty_string"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="@+id/toText"
+                app:layout_constraintEnd_toStartOf="@+id/completeTripImg"
                 app:layout_constraintStart_toStartOf="@+id/fromLocation"
                 app:layout_constraintTop_toTopOf="@+id/toText" />
 
