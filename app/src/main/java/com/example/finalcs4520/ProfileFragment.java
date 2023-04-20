@@ -618,6 +618,7 @@ public class ProfileFragment extends Fragment {
                     .centerCrop()
                     .into(profileImage);
         }
+        ArrayList<TripProfile> resumePast = new ArrayList<>();
         DocumentReference docRef = db.collection("userTrips").document(mUser.getEmail());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -656,10 +657,10 @@ public class ProfileFragment extends Fragment {
                             } else {
                                 tempPastTrip = new TripProfile(fromLocation, toLocation, dateTrip, transportations, true, null);
                             }
-
                             tempPastTrips.add(tempPastTrip);
                         }
                         pastTripProfile = tempPastTrips;
+
 
                         if (pastFutureTripsSwitch.getText().toString().equals("Upcoming Trips") || !wasChecked) {
                             tripProfileAdapter = new TripProfileAdapter(thisUserEmail, tripProfile, getContext());

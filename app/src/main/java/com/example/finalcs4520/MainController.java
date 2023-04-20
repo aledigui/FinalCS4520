@@ -285,10 +285,10 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onAcceptPressed(String userEmail) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
-                .addToBackStack(null)
-                .commit();
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < (fm.getBackStackEntryCount() - 2); ++i) {
+            fm.popBackStack();
+        }
     }
 
     // TRANSIT ROUT FRAGMENT MENU
@@ -429,10 +429,11 @@ public class MainController extends AppCompatActivity implements RegisterLogInFr
 
     @Override
     public void onAcceptClicked(String userEmail) {
-        getSupportFragmentManager().beginTransaction()
+        /*getSupportFragmentManager().beginTransaction()
                 .replace(R.id.MainActivityContainer, ProfileFragment.newInstance(userEmail), "profileFragment")
                 .addToBackStack(null)
-                .commit();
+                .commit();*/
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
