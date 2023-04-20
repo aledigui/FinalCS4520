@@ -20,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -130,6 +133,10 @@ public class ProfileFragment extends Fragment {
 
     private ImageView profileButtonP;
 
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private boolean permissions;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -186,8 +193,11 @@ public class ProfileFragment extends Fragment {
         thisUserEmail = mUser.getEmail();
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            permissions = true;
+        } else {
+            permissions = true;
         }
 
         if (getArguments() != null) {
@@ -358,7 +368,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 if (isInternetAvailable()) {
                     if (thisUserEmail.equals(mUser.getEmail())) {
-                        getUserLocation();
+                        getDeviceLocation();
 
                     }
                 } else {
@@ -507,66 +517,71 @@ public class ProfileFragment extends Fragment {
         imgTripPosition = position;
     }
 
-    public void getUserLocation() {
+    private void getDeviceLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                if (location != null) {
-                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-                    try {
-                        myAddress = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                String city = myAddress.get(0).getLocality();
-                String state = myAddress.get(0).getAdminArea();
-                myLocation = state + ", " + city;
-                getActivity().runOnUiThread(new Runnable() {
+        try {
+            if (permissions) {
+                Task<Location> locationDevice = fusedLocationProviderClient.getLastLocation();
+                locationDevice.addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
-                    public void run() {
-                        locationProfileHeader.setText(myLocation);
-                        if (firstlastName.size() > 1) {
-                            User newUserData = new User(usernameProfile.getText().toString(),
-                                    thisUserEmail,
-                                    firstlastName.get(0),
-                                    firstlastName.get(1),
-                                    locationProfileHeader.getText().toString());
-                            db.collection("tripRegisteredUsers").document(thisUserEmail)
-                                    .set(newUserData)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            Location currentLocation = (Location) task.getResult();
+                            if (currentLocation == null) {
+                                Toast.makeText(getContext(), "Unable to retrieve your device location. Try again please", Toast.LENGTH_LONG).show();
+                            } else {
+                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                                List<Address> addresses = null;
+                                try {
+                                    addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                String cityName = addresses.get(0).getLocality();
+                                String stateName = addresses.get(0).getAdminArea();
+                                myLocation = cityName + ", " + stateName;
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        locationProfileHeader.setText(myLocation);
+                                        if (firstlastName.size() > 1) {
+                                            User newUserData = new User(usernameProfile.getText().toString(),
+                                                    thisUserEmail,
+                                                    firstlastName.get(0),
+                                                    firstlastName.get(1),
+                                                    locationProfileHeader.getText().toString());
+                                            db.collection("tripRegisteredUsers").document(thisUserEmail)
+                                                    .set(newUserData)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
 
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(getContext(), "Unable to store your location",
+                                                                    Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
                                         }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getContext(), "Unable to store your location",
-                                                    Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Unable to retrieve your device location. Try again please", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-
             }
-        });
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private boolean isInternetAvailable() {
