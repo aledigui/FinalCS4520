@@ -135,6 +135,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
                                 iProfileTrip.onDeletePressed(profileTrips.get(pos));
                             } else {
                                 Toast.makeText(view.getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                                return;
                             }
 
                         }
@@ -147,6 +148,7 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
                                 iProfileTrip.onCompleteTripPressed(profileTrips.get(pos));
                             } else {
                                 Toast.makeText(view.getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                                return;
                             }
                         }
                     });
@@ -158,6 +160,11 @@ public class TripProfileAdapter extends RecyclerView.Adapter<TripProfileAdapter.
                     holder.getTripImg().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
+                            if (!isInternetAvailable()) {
+                                Toast.makeText(view.getContext(), "No network connection", Toast.LENGTH_LONG).show();
+                                return;
+                            }
                             iProfileTrip.onTripImgPressed(pos);
                         }
                     });
